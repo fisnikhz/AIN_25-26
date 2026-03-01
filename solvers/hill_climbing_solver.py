@@ -1,13 +1,9 @@
 from base_solver import BaseSolver
-from models.solution.solution import Solution
-from models.solution.schedule import Schedule
-from models.instance.instance_data import InstanceData
-
 from evaluators.base_evaluator import BaseEvaluator
-
 from io_utils.file_selector import select_file
 from io_utils.initial_solution_parser import SolutionParser
 from io_utils.instance_parser import InstanceParser
+from models.solution.solution import Solution
 
 
 # MOS HARRO MI NDRRU QITO
@@ -17,13 +13,15 @@ INITITAL_SOLUTION_PATH = 'filan/fisteku'
 class HillClimbingSolver(BaseSolver):
 
     def __init__(self, instance_path: str, init_solution_path: str):
+
         instance = InstanceParser(select_file(instance_path)).parse()
 
         evaluator = BaseEvaluator(instance)
         init_schedule = SolutionParser(select_file(init_solution_path)).parse()
-        unselected_ids = self.__get_unselected_ids(instance, init_schedule)
+        unselected_ids = self.__get_unselected_ids(instance)
 
-        solution = Solution(evaluator=evaluator, selected=init_schedule, unselected_ids=unselected_ids)
+        solution = Solution(evaluator=evaluator, selected=init_schedule,
+                            unselected_ids=unselected_ids)
 
         super().__init__(solution)
 
@@ -43,20 +41,29 @@ class HillClimbingSolver(BaseSolver):
 
         return self.solution
     
-    def __mutate() -> Solution:
+    def __mutate(self) -> Solution:
         '''
             perdore ni strategji qfare t'dush per me thirr njanin prej 
             operatorve: swap() ose shift()
-        '''
-        '''
-            coin = flip()
-            if coin:
-                swap(random_args)
-            else:
-                shift(random_args)
+
+            p.sh.:
+                coin = flip()
+                if coin:
+                    return swap(random_args)
+                else:
+                    return shift(random_args)
         '''
         pass
 
-    def __get_unselected_ids(instance: InstanceData, schedule: Schedule) -> list[str]:
-        
+    def __get_unselected_ids(self, instance) -> list[str]:
+        schedule = self.solution.selected
+
+        unselected = []
+        '''
+            for program in intance:
+                if program not in schedule:
+                    unselected.append(program.id)
+
+            return unselected
+        '''
         pass
