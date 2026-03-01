@@ -1,6 +1,8 @@
+from scheduled_program import ScheduledProgram
+
 class Schedule:
-    def __init__(self, scheduled_programs):
-        self.scheduled_programs = scheduled_programs
+    def __init__(self, scheduled_programs: list[ScheduledProgram]):
+        self.scheduled_programs = scheduled_programs if scheduled_programs is not None else []
 
     def __len__(self):
         return len(self.scheduled_programs)

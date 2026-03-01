@@ -1,6 +1,9 @@
 from base_solver import BaseSolver
 from models.solution.solution import Solution
+from models.solution.schedule import Schedule
+from models.instance.instance_data import InstanceData
 
+from evaluators.base_evaluator import BaseEvaluator
 
 from io_utils.file_selector import select_file
 from io_utils.initial_solution_parser import SolutionParser
@@ -12,34 +15,35 @@ INSTANCE_PATH = 'filan/fisteku'
 INITITAL_SOLUTION_PATH = 'filan/fisteku'
 
 class HillClimbingSolver(BaseSolver):
-    def __init__(self, programs):
-        super().__init__(programs)
+
+    def __init__(self, instance_path: str, init_solution_path: str):
+        instance = InstanceParser(select_file(instance_path)).parse()
+
+        evaluator = BaseEvaluator(instance)
+        init_schedule = SolutionParser(select_file(init_solution_path)).parse()
+        unselected_ids = self.__get_unselected_ids(instance, init_schedule)
+
+        solution = Solution(evaluator=evaluator, selected=init_schedule, unselected_ids=unselected_ids)
+
+        super().__init__(solution)
 
     def solve(self) -> Solution:
-        instance = InstanceParser(select_file(INSTANCE_PATH)).parse()
-        print(f"Instanca e problemit është ngarukar: {instance}")
-
-        c = SolutionParser(select_file(INITITAL_SOLUTION_PATH)).parse()
-        print(f"Zgjidhja kanonike C është ngarukar: {c}")
-
-        f_c: int = c.fitness()
 
         while True:
+            fitness = self.solution.fitness
 
-            # mos harro qito metoda mi ndrru
-            c_mutated = self._mutate(c)
-            f_c_mutated = self._fitness(c_mutated)
+            solution_mutated = self.__mutate()
+            fitness_mutated = solution_mutated.fitness
 
-            if (f_c_mutated < f_c):
+            if (fitness_mutated < fitness):
                 break
 
-            c = c_mutated
-            f_c = f_c_mutated
+            self.solution = solution_mutated
+            fitness = fitness_mutated
 
-        return c
+        return self.solution
     
-
-    def _mutate(c):
+    def __mutate() -> Solution:
         '''
             perdore ni strategji qfare t'dush per me thirr njanin prej 
             operatorve: swap() ose shift()
@@ -53,8 +57,6 @@ class HillClimbingSolver(BaseSolver):
         '''
         pass
 
-    def _fitness(c):
-        '''
-            ska me u implementu, veq mos harru me ndreq qysh e thirr fitnesin.
-        '''
+    def __get_unselected_ids(instance: InstanceData, schedule: Schedule) -> list[str]:
+        
         pass

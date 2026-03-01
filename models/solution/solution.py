@@ -1,16 +1,16 @@
-from typing import List, Optional
+from schedule import Schedule
 from models.solution.scheduled_program import ScheduledProgram
 from evaluators.evaluator import Evaluator
 
 
 class Solution:
     def __init__(self, evaluator: Evaluator,
-                 selected: Optional[List[ScheduledProgram]] = None,
-                 unselected_ids: Optional[List[int]] = None):
+                 selected: Schedule = None,
+                 unselected_ids: list[int] = None):
         self.evaluator = evaluator
-        self.selected = selected if selected is not None else []
+        self.selected = selected
         self.unselected_ids = unselected_ids if unselected_ids is not None else []
-        self._fitness: Optional[float] = None
+        self._fitness: float = None
 
     @property
     def fitness(self) -> float:
