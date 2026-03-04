@@ -26,13 +26,13 @@ def main():
 
     evaluator = BaseEvaluator(instance)
     solution = Solution(evaluator, selected=schedule)
-    print(f"\nTotal score: {solution.fitness}")
+    print(f"\nTotal score: {solution.calculate_fitness()}")
 
     solver = HillClimbingSolver(solution)
     best_solution = solver.solve()
 
     print(f"Optimization complete!")
-    print(f"New Total score: {best_solution.fitness}")
+    print(f"Greedy fitness: {solution.calculate_fitness()} --- Hill climbing fitness: {best_solution.calculate_fitness()}")
 
 
 if __name__ == "__main__":

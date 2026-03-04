@@ -12,8 +12,7 @@ class HillClimbingSolver(BaseSolver):
 
     def __init__(self, solution: Solution):
         super().__init__(solution)
-        
-        self.unselected_ids = self.__get_unselected_ids(self.solution.evaluator.instance)
+        # self.unselected_ids = self.__get_unselected_ids(self.solution.evaluator.instance)
 
     def solve(self) -> Solution:
         print("\n=== Starting Hill Climbing Optimization ===")
@@ -22,7 +21,7 @@ class HillClimbingSolver(BaseSolver):
         for _ in range(config.MAX_ITERATIONS):
             neighbor = self.__mutate()
 
-            if neighbor.fitness >= self.solution.fitness:
+            if neighbor.calculate_fitness() >= self.solution.calculate_fitness():
                 self.solution = neighbor
                     
         return self.solution
