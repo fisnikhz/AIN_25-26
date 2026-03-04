@@ -20,14 +20,14 @@ class HillClimbingSolver(BaseSolver):
 
         for _ in range(config.MAX_ITERATIONS):
             # Try multiple mutations, accept first one that improves
-            improved = False
-            for _ in range(10):  # Try up to 10 mutations per iteration
+            # improved = False
+            # for _ in range(10):  # Try up to 10 mutations per iteration
                 neighbor = self.__mutate()
                 
-                if neighbor.fitness > self.solution.fitness:
+                if neighbor.fitness >= self.solution.fitness:
                     self.solution = neighbor
-                    improved = True
-                    break  # Accept first improvement (hill climbing)
+                    # improved = True
+                    # break  # Accept first improvement (hill climbing)
                     
         return self.solution
     
