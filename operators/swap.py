@@ -1,13 +1,16 @@
 import random
+from copy import deepcopy
 from models.solution.solution import Solution
 from models.solution.scheduled_program import ScheduledProgram
 from models.instance.instance_data import InstanceData
 
 def swap(solution: Solution, instance: InstanceData) -> Solution:
-    if not solution.selected or not solution.unselected_ids:
-        return solution
+    copy = deepcopy(solution)
+    
+    if not copy.selected or not copy.unselected_ids:
+        return copy
 
-    old_program = random.choice(solution.selected)
+    old_program = random.choice(copy.selected)
     
     target_channel_id = old_program.channel_id
     
@@ -19,11 +22,11 @@ def swap(solution: Solution, instance: InstanceData) -> Solution:
             
     possible_replacements = [
         p for p in channel_programs 
-        if p.program_id in solution.unselected_ids
+        if p.program_id in copy.unselected_ids
     ]
 
     if not possible_replacements:
-        return solution
+        return copy
 
     new_data = random.choice(possible_replacements)
     
@@ -34,7 +37,7 @@ def swap(solution: Solution, instance: InstanceData) -> Solution:
         end=new_data.end
     )
 
-    solution.unselect_program(old_program)
-    solution.select_program(new_scheduled)
+    copy.unselect_program(old_program)
+    copy.select_program(new_scheduled)
         
-    return solution
+    return copy

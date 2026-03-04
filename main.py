@@ -11,12 +11,12 @@ def main():
     print("=== Select Instance File ===")
     instance_path = select_file("data/input")
     instance = InstanceParser(instance_path).parse()
-    print(f"Loaded instance: {instance}")
+    # print(f"Loaded instance: {instance}")
 
     print("\n=== Select Solution File ===")
     solution_path = select_file("data/solutions/greedyscheduler")
     schedule = SolutionParser(solution_path).parse()
-    print(f"Loaded schedule: {schedule}")
+    # print(f"Loaded schedule: {schedule}")
 
     try:
         validate_schedule_against_instance(schedule, instance)
@@ -25,15 +25,22 @@ def main():
         return
 
     evaluator = BaseEvaluator(instance)
-    solution = Solution(evaluator, selected=schedule)
-    print(f"\nTotal score: {solution.calculate_fitness()}")
 
+    unselected_ids = []
+    
+    for channel in instance.channels:
+        for program in channel.programs:
+            if program.program_id not in {p.program_id for p in schedule}:
+                unselected_ids.append(program.program_id)
+
+    solution = Solution(evaluator, selected=schedule, unselected_ids=unselected_ids)
+    print(f"\nTotal score: {solution.fitness}")
+    print(f"unselected program ids: {solution.unselected_ids}")
     solver = HillClimbingSolver(solution)
     best_solution = solver.solve()
 
     print(f"Optimization complete!")
-    print(f"Greedy fitness: {solution.calculate_fitness()} --- Hill climbing fitness: {best_solution.calculate_fitness()}")
-
+    print(f"Greedy fitness: {solution.fitness} --- Hill climbing fitness: {best_solution.fitness}")
 
 if __name__ == "__main__":
     main()

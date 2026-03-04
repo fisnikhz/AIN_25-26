@@ -26,12 +26,12 @@ class Solution:
             self.unselected_ids.remove(program.program_id)
 
         if program not in self.selected:
-            self.selected.append(program)
+            self.selected.scheduled_programs.append(program)
             self._fitness = None
 
     def unselect_program(self, scheduled_program: ScheduledProgram):
         if scheduled_program in self.selected:
-            self.selected.remove(scheduled_program)
+            self.selected.scheduled_programs.remove(scheduled_program)
             
             if scheduled_program.program_id not in self.unselected_ids:
                 self.unselected_ids.append(scheduled_program.program_id)
@@ -40,5 +40,5 @@ class Solution:
 
     def __repr__(self):
         return (f"Solution(fitness={self.fitness}, "
-                f"selected={len(self.selected)}, "
+                f"selected={len(self.selected.scheduled_programs)}, "
                 f"unselected={len(self.unselected_ids)})")
