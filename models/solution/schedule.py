@@ -1,5 +1,5 @@
 from collections.abc import Iterator
-from scheduled_program import ScheduledProgram
+from models.solution.scheduled_program import ScheduledProgram
 
 class Schedule:
     def __init__(self, scheduled_programs: list[ScheduledProgram]):

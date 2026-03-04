@@ -5,6 +5,7 @@ from models.solution.solution import Solution
 def shift(state: Solution, program_id: str, 
           direction: ShiftDirection, shamt: int) -> Solution:
     
+    print(f"shamt: {shamt}, distance(state={state}, program_id={program_id}, direction={direction})={distance(state, program_id, direction)}")
     shamt = max(shamt, distance(state, program_id, direction))
     
     for program in state.selected.scheduled_programs:
@@ -19,7 +20,7 @@ def distance(state: Solution, program_id: str,
     
     programs = state.selected.scheduled_programs
     for i in range(len(programs)):
-        if programs[0].program_id == program_id:
+        if programs[i].program_id == program_id:
             if direction == ShiftDirection.left:
                 return programs[i].start - programs[i-1].end
             if direction == ShiftDirection.right:

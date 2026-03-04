@@ -1,15 +1,12 @@
 from solvers.base_solver import BaseSolver
-from evaluators.base_evaluator import BaseEvaluator
-from io_utils.file_selector import select_file
-from io_utils.initial_solution_parser import SolutionParser
-from io_utils.instance_parser import InstanceParser
 from models.solution.solution import Solution
 from operators.swap import swap
+from operators.shift import shift
+from operators.shift import ShiftDirection
+import config.config as config
 
-
-# MOS HARRO MI NDRRU QITO
-INSTANCE_PATH = 'filan/fisteku'
-INITITAL_SOLUTION_PATH = 'filan/fisteku'
+from copy import deepcopy
+import random
 
 class HillClimbingSolver(BaseSolver):
 
@@ -19,31 +16,29 @@ class HillClimbingSolver(BaseSolver):
         self.unselected_ids = self.__get_unselected_ids(self.solution.evaluator.instance)
 
     def solve(self) -> Solution:
+        print("\n=== Starting Hill Climbing Optimization ===")
         print(f"Initial fitness: {self.solution.fitness}")
-        
-        iteration = 0
-        while True:
-            iteration += 1
-            neighbor = self.__mutate() # This calls your swap
-            
-            if neighbor.fitness > self.solution.fitness:
-                print(f"Iteration {iteration}: Found better fitness! {neighbor.fitness}")
+
+        for _ in range(config.MAX_ITERATIONS):
+            neighbor = self.__mutate()
+
+            if neighbor.fitness >= self.solution.fitness:
                 self.solution = neighbor
-            else:
-                if iteration % 100 == 0:
-                    print(f"Still searching... (Iteration {iteration})")
-                
-                if iteration > 5000: # Temporary safety cap for testing
-                    print("Reached iteration limit or local optimum.")
-                    break
                     
         return self.solution
     
     def __mutate(self) -> Solution:
-        import copy
-        mutated_solution = copy.deepcopy(self.solution)
+
+        coin = random.random() < 0.5
+        if coin:
+            copy = swap(self.solution, self.solution.evaluator.instance)
+        else:
+            program_id = random.choice(self.solution.selected).program_id
+            direction = random.choice(list(ShiftDirection))
+            shamt = random.random() * config.MAX_SHIFT
+            copy = shift(self.solution, program_id, direction, shamt)
         
-        return swap(mutated_solution, self.solution.evaluator.instance)
+        return copy
 
     def __get_unselected_ids(self, instance) -> list[str]:
         selected_ids = {p.program_id for p in self.solution.selected}

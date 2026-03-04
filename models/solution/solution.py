@@ -1,4 +1,4 @@
-from schedule import Schedule
+from models.solution.schedule import Schedule
 from models.solution.scheduled_program import ScheduledProgram
 from evaluators.evaluator import Evaluator
 

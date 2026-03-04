@@ -25,11 +25,10 @@ def main():
         return
 
     evaluator = BaseEvaluator(instance)
-    solution = Solution(evaluator, selected=schedule.scheduled_programs)
+    solution = Solution(evaluator, selected=schedule)
     print(f"\nTotal score: {solution.fitness}")
 
-    print("\n=== Starting Hill Climbing Optimization ===")
-    solver = HillClimbingSolver(solution) 
+    solver = HillClimbingSolver(solution)
     best_solution = solver.solve()
 
     print(f"Optimization complete!")

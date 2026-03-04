@@ -1,8 +1,9 @@
 import random
 from models.solution.solution import Solution
 from models.solution.scheduled_program import ScheduledProgram
+from models.instance.instance_data import InstanceData
 
-def swap(solution: Solution, instance) -> Solution:
+def swap(solution: Solution, instance: InstanceData) -> Solution:
     if not solution.selected or not solution.unselected_ids:
         return solution
 
