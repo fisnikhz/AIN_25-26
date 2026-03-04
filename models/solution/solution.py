@@ -29,13 +29,14 @@ class Solution:
             self.selected.append(program)
             self._fitness = None
 
-    def unselect_program(self, program: ScheduledProgram):
-        if program in self.selected:
-            self.selected.remove(program)
+    def unselect_program(self, scheduled_program: ScheduledProgram):
+        if scheduled_program in self.selected:
+            self.selected.remove(scheduled_program)
+            
+            if scheduled_program.program_id not in self.unselected_ids:
+                self.unselected_ids.append(scheduled_program.program_id)
+                
             self._fitness = None
-
-        if program.program_id not in self.unselected_ids:
-            self.unselected_ids.append(program.program_id)
 
     def __repr__(self):
         return (f"Solution(fitness={self.fitness}, "
