@@ -5,32 +5,25 @@ from operators.shift import shift
 from operators.shift import ShiftDirection
 import config.config as config
 
-from copy import deepcopy
 import random
+
 
 class HillClimbingSolver(BaseSolver):
 
     def __init__(self, solution: Solution):
         super().__init__(solution)
-        # self.unselected_ids = self.__get_unselected_ids(self.solution.evaluator.instance)
 
     def solve(self) -> Solution:
         print("\n=== Starting Hill Climbing Optimization ===")
-        print(f"Initial fitness: {self.solution.fitness}")
 
         for _ in range(config.MAX_ITERATIONS):
-            # Try multiple mutations, accept first one that improves
-            # improved = False
-            # for _ in range(10):  # Try up to 10 mutations per iteration
-                neighbor = self.__mutate()
-                
-                if neighbor.fitness >= self.solution.fitness:
-                    self.solution = neighbor
-                    # improved = True
-                    # break  # Accept first improvement (hill climbing)
-                    
+            neighbor = self.__mutate()
+
+            if neighbor.fitness >= self.solution.fitness:
+                self.solution = neighbor
+
         return self.solution
-    
+
     def __mutate(self) -> Solution:
 
         coin = random.random() < 0.5
@@ -41,16 +34,5 @@ class HillClimbingSolver(BaseSolver):
             direction = random.choice(list(ShiftDirection))
             shamt = random.random() * config.MAX_SHIFT
             copy = shift(self.solution, program_id, direction, shamt)
-        
-        return copy
 
-    def __get_unselected_ids(self, instance) -> list[str]:
-        selected_ids = {p.program_id for p in self.solution.selected}
-        
-        unselected = []
-        for channel in instance.channels:
-            for program in channel.programs:
-                if program.program_id not in selected_ids:
-                    unselected.append(program.program_id)
-        
-        return unselected
+        return copy

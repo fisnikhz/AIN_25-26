@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from io_utils.file_selector import select_file
 from io_utils.instance_parser import InstanceParser
 from io_utils.initial_solution_parser import SolutionParser
@@ -27,20 +29,21 @@ def main():
     evaluator = BaseEvaluator(instance)
 
     unselected_ids = []
-    
+
     for channel in instance.channels:
         for program in channel.programs:
             if program.program_id not in {p.program_id for p in schedule}:
                 unselected_ids.append(program.program_id)
 
-    solution = Solution(evaluator, selected=schedule, unselected_ids=unselected_ids)
-    print(f"\nTotal score: {solution.fitness}")
-    print(f"unselected program ids: {solution.unselected_ids}")
+    solution = Solution(evaluator=evaluator,
+                        selected=schedule,
+                        unselected_ids=unselected_ids)
     solver = HillClimbingSolver(solution)
     best_solution = solver.solve()
 
-    print(f"Optimization complete!")
-    print(f"Greedy fitness: {solution.fitness} --- Hill climbing fitness: {best_solution.fitness}")
+    print(f"Old greedy fitness: {solution.fitness}")
+    print(f"New hill climbing fitness: {best_solution.fitness}")
+
 
 if __name__ == "__main__":
     main()
