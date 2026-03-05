@@ -13,12 +13,10 @@ def main():
     print("=== Select Instance File ===")
     instance_path = select_file("data/input")
     instance = InstanceParser(instance_path).parse()
-    # print(f"Loaded instance: {instance}")
 
     print("\n=== Select Solution File ===")
     solution_path = select_file("data/solutions/greedyscheduler")
     schedule = SolutionParser(solution_path).parse()
-    # print(f"Loaded schedule: {schedule}")
 
     try:
         validate_schedule_against_instance(schedule, instance)
@@ -35,13 +33,17 @@ def main():
             if program.program_id not in {p.program_id for p in schedule}:
                 unselected_ids.append(program.program_id)
 
+    print(f"Unselected programs: {unselected_ids}")
+
     solution = Solution(evaluator=evaluator,
                         selected=schedule,
                         unselected_ids=unselected_ids)
+
+    print(f"Old greedy fitness: {solution.fitness}")
+
     solver = HillClimbingSolver(solution)
     best_solution = solver.solve()
 
-    print(f"Old greedy fitness: {solution.fitness}")
     print(f"New hill climbing fitness: {best_solution.fitness}")
 
 
