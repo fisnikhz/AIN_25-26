@@ -2,6 +2,10 @@ from dataclasses import dataclass
 from enum import Enum, auto
 from copy import deepcopy
 from models.solution.solution import Solution
+@dataclass(frozen=True)
+class ShiftDirection(Enum):
+    left = auto()
+    right = auto()
 
 def shift(state: Solution, program_id: str, 
           direction: ShiftDirection, shamt: int) -> Solution:
@@ -30,8 +34,3 @@ def distance(state: Solution, program_id: str,
                 return programs[i+1].start - programs[i].end
     return 0
     
-
-@dataclass(frozen=True)
-class ShiftDirection(Enum):
-    left = auto()
-    right = auto()
