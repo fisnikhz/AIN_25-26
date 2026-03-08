@@ -1,0 +1,70 @@
+{
+    "scheduled_programs": [
+        {
+            "program_id": "p0_1",
+            "channel_id": 0,
+            "start": 0,
+            "end": 45
+        },
+        {
+            "program_id": "p0_2",
+            "channel_id": 0,
+            "start": 45,
+            "end": 90
+        },
+        {
+            "program_id": "p1_1",
+            "channel_id": 1,
+            "start": 90,
+            "end": 120
+        },
+        {
+            "program_id": "p2_1",
+            "channel_id": 2,
+            "start": 120,
+            "end": 180
+        },
+        {
+            "program_id": "p3_1",
+            "channel_id": 3,
+            "start": 180,
+            "end": 240
+        },
+        {
+            "program_id": "p2_2",
+            "channel_id": 2,
+            "start": 240,
+            "end": 270
+        },
+        {
+            "program_id": "p1_2",
+            "channel_id": 1,
+            "start": 300,
+            "end": 420
+        },
+        {
+            "program_id": "p2_3",
+            "channel_id": 2,
+            "start": 480,
+            "end": 570
+        },
+        {
+            "program_id": "p0_4",
+            "channel_id": 0,
+            "start": 600,
+            "end": 690
+        },
+        {
+            "program_id": "p1_4",
+            "channel_id": 1,
+            "start": 720,
+            "end": 810
+        },
+        {
+            "program_id": "p1_5",
+            "channel_id": 1,
+            "start": 900,
+            "end": 990
+        }
+    ]
+}
