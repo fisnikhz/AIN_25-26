@@ -29,7 +29,7 @@ class HillClimbingSolver(BaseSolver):
 
         coin = random.random() < 0.5
         if coin:
-            copy = swap(self.solution, self.solution.evaluator.instance)
+            copy = swap(self.solution, instance) 
         else:
             program = random.choice(self.solution.selected)
             direction = random.choice(list(ShiftDirection))

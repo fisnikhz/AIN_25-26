@@ -12,6 +12,9 @@ def swap(solution: Solution, instance: InstanceData) -> Solution:
 
     old_program = random.choice(copy.selected)
     
+    start_limit = old_program.start
+    end_limit = old_program.end
+    
     target_channel_id = old_program.channel_id
     
     channel_programs = []
@@ -22,7 +25,9 @@ def swap(solution: Solution, instance: InstanceData) -> Solution:
             
     possible_replacements = [
         p for p in channel_programs 
-        if p.program_id in copy.unselected_ids
+        if p.program_id in copy.unselected_ids and 
+           p.start >= start_limit and 
+           p.end <= end_limit
     ]
 
     if not possible_replacements:
