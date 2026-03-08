@@ -42,7 +42,7 @@ def main():
     print(f"Old greedy fitness: {solution.fitness}")
 
     solver = HillClimbingSolver(solution)
-    best_solution = solver.solve()
+    best_solution = solver.solve(instance)
 
     print(f"New hill climbing fitness: {best_solution.fitness}")
 
