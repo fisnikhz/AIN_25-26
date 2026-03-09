@@ -14,8 +14,10 @@ class HillClimbingSolver(BaseSolver):
     def __init__(self, solution: Solution):
         super().__init__(solution)
 
-    def solve(self, instance: InstanceData) -> Solution:
+    def solve(self) -> Solution:
         print("\n=== Starting Hill Climbing Optimization ===")
+
+        instance = self.solution.evaluator.instance
 
         for _ in range(config.MAX_ITERATIONS):
             neighbor = self.__mutate(instance)

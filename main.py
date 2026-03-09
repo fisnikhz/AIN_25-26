@@ -15,7 +15,7 @@ def main():
     instance = InstanceParser(instance_path).parse()
 
     print("\n=== Select Solution File ===")
-    solution_path = select_file("data/solutions/greedyscheduler")
+    solution_path = select_file("data/solutions/constructiveapproach")
     schedule = SolutionParser(solution_path).parse()
 
     try:
@@ -42,7 +42,7 @@ def main():
     print(f"Old greedy fitness: {solution.fitness}")
 
     solver = HillClimbingSolver(solution)
-    best_solution = solver.solve(instance)
+    best_solution = solver.solve()
 
     print(f"New hill climbing fitness: {best_solution.fitness}")
 
