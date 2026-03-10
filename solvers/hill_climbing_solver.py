@@ -30,8 +30,10 @@ class HillClimbingSolver(BaseSolver):
     def __mutate(self, instance: InstanceData) -> Solution:
 
         coin = random.random() < 0.5
+        # coin = True
         if coin:
             copy = swap(self.solution, instance) 
+            # print(f'fitness origjinal vs ai i kopjës: {self.solution.fitness} vs {copy.fitness}')
         else:
             program = random.choice(self.solution.selected)
             direction = random.choice(list(ShiftDirection))

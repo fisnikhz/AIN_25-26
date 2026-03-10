@@ -33,7 +33,7 @@ def main():
             if program.program_id not in {p.program_id for p in schedule}:
                 unselected_ids.append(program.program_id)
 
-    print(f"Unselected programs: {unselected_ids}")
+    # print(f"Unselected programs: {unselected_ids}")
 
     solution = Solution(evaluator=evaluator,
                         selected=schedule,
