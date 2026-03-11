@@ -1,36 +1,36 @@
 {
   "opening_time": 0,
-  "closing_time": 1440,
-  "min_duration": 30,
+  "closing_time": 90,
+  "min_duration": 10,
   "max_consecutive_genre": 2,
   "channels_count": 4,
-  "switch_penalty": 5,
-  "termination_penalty": 10,
+  "switch_penalty": 1,
+  "termination_penalty": 2,
   "priority_blocks": [
     {
-      "start": 300,
-      "end": 450,
+      "start": 20,
+      "end": 60,
       "allowed_channels": [0, 1]
     }
   ],
   "time_preferences": [
     {
       "start": 0,
-      "end": 360,
+      "end": 30,
       "preferred_genre": "news",
-      "bonus": 30
+      "bonus": 3
     },
     {
-      "start": 360,
-      "end": 720,
+      "start": 30,
+      "end": 60,
       "preferred_genre": "entertainment",
-      "bonus": 25
+      "bonus": 3
     },
     {
-      "start": 720,
-      "end": 1080,
+      "start": 60,
+      "end": 90,
       "preferred_genre": "sports",
-      "bonus": 40
+      "bonus": 4
     }
   ],
   "channels": [
@@ -41,30 +41,30 @@
         {
           "program_id": "p0_1",
           "start": 0,
-          "end": 45,
+          "end": 15,
           "genre": "news",
-          "score": 75
+          "score": 6
         },
         {
           "program_id": "p0_2",
-          "start": 45,
-          "end": 90,
+          "start": 15,
+          "end": 30,
           "genre": "news",
-          "score": 80
+          "score": 6
         },
         {
           "program_id": "p0_3",
-          "start": 300,
-          "end": 390,
+          "start": 30,
+          "end": 45,
           "genre": "entertainment",
-          "score": 65
+          "score": 5
         },
         {
           "program_id": "p0_4",
-          "start": 600,
-          "end": 690,
+          "start": 45,
+          "end": 60,
           "genre": "sports",
-          "score": 90
+          "score": 7
         }
       ]
     },
@@ -74,38 +74,38 @@
       "programs": [
         {
           "program_id": "p1_1",
-          "start": 60,
-          "end": 120,
+          "start": 0,
+          "end": 10,
           "genre": "documentary",
-          "score": 70
+          "score": 7
         },
         {
           "program_id": "p1_2",
-          "start": 300,
-          "end": 420,
+          "start": 10,
+          "end": 25,
           "genre": "entertainment",
-          "score": 85
+          "score": 9
         },
         {
           "program_id": "p1_3",
-          "start": 450,
-          "end": 540,
+          "start": 25,
+          "end": 40,
           "genre": "entertainment",
-          "score": 60
+          "score": 6
         },
         {
           "program_id": "p1_4",
-          "start": 720,
-          "end": 810,
+          "start": 40,
+          "end": 60,
           "genre": "sports",
-          "score": 95
+          "score": 10
         },
         {
           "program_id": "p1_5",
-          "start": 900,
-          "end": 990,
+          "start": 60,
+          "end": 80,
           "genre": "music",
-          "score": 55
+          "score": 6
         }
       ]
     },
@@ -115,24 +115,24 @@
       "programs": [
         {
           "program_id": "p2_1",
-          "start": 120,
-          "end": 210,
+          "start": 0,
+          "end": 20,
           "genre": "news",
-          "score": 72
+          "score": 9
         },
         {
           "program_id": "p2_2",
-          "start": 240,
-          "end": 330,
+          "start": 20,
+          "end": 35,
           "genre": "documentary",
-          "score": 68
+          "score": 9
         },
         {
           "program_id": "p2_3",
-          "start": 480,
-          "end": 570,
+          "start": 35,
+          "end": 55,
           "genre": "entertainment",
-          "score": 78
+          "score": 10
         }
       ]
     },
@@ -142,34 +142,33 @@
       "programs": [
         {
           "program_id": "p3_1",
-          "start": 180,
-          "end": 270,
+          "start": 0,
+          "end": 20,
           "genre": "news",
-          "score": 77
+          "score": 8
         },
         {
           "program_id": "p3_2",
-          "start": 360,
-          "end": 450,
+          "start": 20,
+          "end": 35,
           "genre": "entertainment",
-          "score": 82
+          "score": 8
         },
         {
           "program_id": "p3_3",
-          "start": 540,
-          "end": 630,
+          "start": 35,
+          "end": 55,
           "genre": "sports",
-          "score": 88
+          "score": 9
         },
         {
           "program_id": "p3_4",
-          "start": 750,
-          "end": 840,
+          "start": 55,
+          "end": 75,
           "genre": "sports",
-          "score": 92
+          "score": 9
         }
       ]
     }
   ]
 }
-
