@@ -15,32 +15,34 @@ def swap(solution: Solution, instance: InstanceData) -> Solution:
     start_limit = old_program.start
     end_limit = old_program.end
     
-    target_channel_id = old_program.channel_id
-    
-    channel_programs = []
+    possible_replacements = []
     for channel in instance.channels:
-        if channel.channel_id == target_channel_id:
-            channel_programs = channel.programs
-            break
-            
-    possible_replacements = [
-        p for p in channel_programs 
-        if p.program_id in copy.unselected_ids and 
-           p.start >= start_limit and 
-           p.end <= end_limit
-    ]
+        for p in channel.programs:
+            # Check if program is unselected AND fits in the same time period
+            if p.program_id in copy.unselected_ids and \
+               p.start >= start_limit and \
+               p.end <= end_limit:
+                
+                # We store both the program data and its channel_id
+                possible_replacements.append((p, channel.channel_id))
 
     if not possible_replacements:
         return copy
 
-    new_data = random.choice(possible_replacements)
+    # Select a random candidate from any channel
+    new_data, new_channel_id = random.choice(possible_replacements)
     
     new_scheduled = ScheduledProgram(
         program_id=new_data.program_id,
-        channel_id=target_channel_id,
+        channel_id=new_channel_id, # Use the channel of the new program
         start=new_data.start,
         end=new_data.end
     )
+
+    # --- Uncoment to see channel swap ---
+    # if new_channel_id != old_program.channel_id:
+    #     print(f"[CHANNEL SWAP] {old_program.program_id} ({old_program.channel_id}) -> "
+    #           f"{new_data.program_id} ({new_channel_id}) at {start_limit}-{end_limit}")
 
     copy.unselect_program(old_program)
     copy.select_program(new_scheduled)

@@ -14,17 +14,23 @@ class HillClimbingSolver(BaseSolver):
     def __init__(self, solution: Solution):
         super().__init__(solution)
 
-    def solve(self) -> Solution:
+    def solve(self, instance: InstanceData) -> Solution:
         print("\n=== Starting Hill Climbing Optimization ===")
 
-        instance = self.solution.evaluator.instance
+        initial_fitness = self.solution.fitness
 
-        for _ in range(config.MAX_ITERATIONS):
+        for i in range(config.MAX_ITERATIONS):
             neighbor = self.__mutate(instance)
 
-            if neighbor.fitness >= self.solution.fitness:
+            # --- VERIFICATION PART ---
+            if neighbor.fitness > self.solution.fitness:
+                print(f"Iteration {i}: Fitness improved! {self.solution.fitness} -> {neighbor.fitness}")
+                self.solution = neighbor
+            elif neighbor.fitness == self.solution.fitness:
+                # Still accept equal moves to explore the "plateau"
                 self.solution = neighbor
 
+        print(f"Total Improvement: {initial_fitness} -> {self.solution.fitness}")
         return self.solution
 
     def __mutate(self, instance: InstanceData) -> Solution:
