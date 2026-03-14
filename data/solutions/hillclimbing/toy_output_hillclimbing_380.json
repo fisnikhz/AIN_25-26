@@ -10,12 +10,12 @@
             "program_id": "n2",
             "channel_id": 0,
             "start": 600,
-            "end": 660
+            "end": 642
         },
         {
             "program_id": "s2",
             "channel_id": 1,
-            "start": 840,
+            "start": 862,
             "end": 960
         },
         {
