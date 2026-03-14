@@ -1,7 +1,7 @@
 from solvers.base_solver import BaseSolver
 from models.instance.instance_data import InstanceData
 from models.solution.solution import Solution
-from operators.swap import swap
+from operators.replace import replace
 from operators.shift import shift
 from operators.shift import ShiftDirection
 import config.config as config
@@ -38,7 +38,7 @@ class HillClimbingSolver(BaseSolver):
         coin = random.random() < 0.5
         # coin = True
         if coin:
-            copy = swap(self.solution, instance) 
+            copy = replace(self.solution, instance) 
             # print(f'fitness origjinal vs ai i kopjës: {self.solution.fitness} vs {copy.fitness}')
         else:
             program = random.choice(self.solution.selected)
