@@ -1,9 +1,8 @@
 from solvers.base_solver import BaseSolver
 from models.instance.instance_data import InstanceData
 from models.solution.solution import Solution
-from operators.swap import swap
-from operators.shift import shift
-from operators.shift import ShiftDirection
+from operators.replace import replace
+from operators.shift_borders import shift_borders, TargetBorder, Mode
 import config.config as config
 
 import random
@@ -38,14 +37,15 @@ class HillClimbingSolver(BaseSolver):
         coin = random.random() < 0.5
         # coin = True
         if coin:
-            copy = swap(self.solution, instance) 
+            copy = replace(self.solution, instance) 
             # print(f'fitness origjinal vs ai i kopjës: {self.solution.fitness} vs {copy.fitness}')
         else:
             program = random.choice(self.solution.selected)
-            direction = random.choice(list(ShiftDirection))
+            direction = random.choice(list(TargetBorder))
+            mode = random.choice(list(Mode))
             shamt = round(random.random() * config.MAX_SHIFT)
             # print(f"shift(instance=[jo-haver], state=[jo-haver],"
             #       f"program_id={program.program_id}, direction={direction}, shamt={shamt})")
-            copy = shift(instance, self.solution, program, direction, shamt)
+            copy = shift_borders(instance, self.solution, program, mode, direction, shamt)
 
         return copy
