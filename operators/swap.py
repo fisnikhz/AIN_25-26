@@ -10,16 +10,8 @@ def swap(
     state: Solution,
     program_a: ScheduledProgram,
     program_b: ScheduledProgram,
-    mode: int = 1,
 ) -> Solution:
-    """
-    Swap operator with 2 modes.
 
-    - mode=1: basic feasibility (fits within opening/closing, no overlaps, respects priority blocks)
-    - mode=2: stricter (mode=1 + respects genre limit + respects instance program window + min duration)
-
-    If swap is not feasible, returns the original state.
-    """
     copy = deepcopy(state)
 
     idx_a = None
@@ -41,7 +33,7 @@ def swap(
 
     copy.selected.scheduled_programs = _sorted_schedule(copy.selected.scheduled_programs)
 
-    if not _is_feasible_swap(copy.selected.scheduled_programs, instance, mode=mode):
+    if not _is_feasible_swap(copy.selected.scheduled_programs, instance):
         return state
 
     copy._fitness = None
@@ -54,8 +46,7 @@ def swap_two(
     program_a: ScheduledProgram,
     program_b: ScheduledProgram,
 ) -> Solution:
-    # Backwards-compatible alias
-    return swap(instance, state, program_a, program_b, mode=1)
+    return swap(instance, state, program_a, program_b)
 
 
 def _sorted_schedule(schedule: list[ScheduledProgram]) -> list[ScheduledProgram]:
@@ -65,10 +56,7 @@ def _sorted_schedule(schedule: list[ScheduledProgram]) -> list[ScheduledProgram]
     )
 
 
-def _is_feasible_swap(schedule: list[ScheduledProgram], instance: InstanceData, mode: int) -> bool:
-    if mode not in (1, 2):
-        mode = 1
-
+def _is_feasible_swap(schedule: list[ScheduledProgram], instance: InstanceData) -> bool:
     if not schedule:
         return True
 
@@ -87,16 +75,15 @@ def _is_feasible_swap(schedule: list[ScheduledProgram], instance: InstanceData, 
         if not _respects_priority_blocks(sp.start, sp.end, sp.channel_id, instance):
             return False
 
-        if mode == 2:
-            inst_p = lookup.get((sp.channel_id, sp.program_id))
-            if inst_p is None:
-                return False
-            if sp.start < inst_p.start or sp.end > inst_p.end:
-                return False
-            if (sp.end - sp.start) < instance.min_duration:
-                return False
+        inst_p = lookup.get((sp.channel_id, sp.program_id))
+        if inst_p is None:
+            return False
+        if sp.start < inst_p.start or sp.end > inst_p.end:
+            return False
+        if (sp.end - sp.start) < instance.min_duration:
+            return False
 
-    if mode == 2 and not _respects_genre_limit(schedule, instance, lookup):
+    if not _respects_genre_limit(schedule, instance, lookup):
         return False
 
     return True
