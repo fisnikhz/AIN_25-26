@@ -3,6 +3,7 @@ from models.instance.instance_data import InstanceData
 from models.solution.solution import Solution
 from operators.replace import replace
 from operators.shift_borders import shift_borders, TargetBorder, Mode
+from operators.swap import swap
 import config.config as config
 
 import random
@@ -33,19 +34,43 @@ class HillClimbingSolver(BaseSolver):
         return self.solution
 
     def __mutate(self, instance: InstanceData) -> Solution:
+        r = random.random()
 
-        coin = random.random() < 0.5
-        # coin = True
-        if coin:
-            copy = replace(self.solution, instance) 
-            # print(f'fitness origjinal vs ai i kopjës: {self.solution.fitness} vs {copy.fitness}')
-        else:
+        if 0 <= r < 0.33:
             program = random.choice(self.solution.selected)
             direction = random.choice(list(TargetBorder))
             mode = random.choice(list(Mode))
             shamt = round(random.random() * config.MAX_SHIFT)
-            # print(f"shift(instance=[jo-haver], state=[jo-haver],"
-            #       f"program_id={program.program_id}, direction={direction}, shamt={shamt})")
-            copy = shift_borders(instance, self.solution, program, mode, direction, shamt)
+            return shift_borders(instance, self.solution, program, mode, direction, shamt)
+        elif 0.33 <= r < 0.66:
+            return replace(self.solution, instance)
+        else:
+            scheduled = list(self.solution.selected)
+            if len(scheduled) < 2:
+                return replace(self.solution, instance)
 
-        return copy
+            i = random.randrange(len(scheduled))
+            offsets = [(1, -1), (1, 1), (2, -1), (2, 1)]
+            random.shuffle(offsets)
+
+            best = None
+            tried = 0
+            for offset, direction in offsets:
+                if tried >= 2:
+                    break
+                j = i + direction * offset
+                if j < 0 or j >= len(scheduled) or j == i:
+                    continue
+
+                program_a = scheduled[i]
+                program_b = scheduled[j]
+                mode = 2 if random.random() < 0.5 else 1
+                candidate = swap(instance, self.solution, program_a, program_b, mode=mode)
+
+                tried += 1
+                if candidate is self.solution:
+                    continue
+                if best is None or candidate.fitness > best.fitness:
+                    best = candidate
+
+            return best if best is not None else replace(self.solution, instance)
