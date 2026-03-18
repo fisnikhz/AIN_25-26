@@ -41,12 +41,13 @@ class HillClimbingSolver(BaseSolver):
             def swap_op():
                 print("Operator chosen: swap")
                 i = random.randrange(len(scheduled))
-                offsets = [(1, -1), (1, 1), (2, -1), (2, 1)]
-                random.shuffle(offsets)
-                for offset, direction in offsets:
-                    j = i + direction * offset
-                    if j < 0 or j >= len(scheduled) or j == i:
-                        continue
+                possible_j = []
+                if i > 0:
+                    possible_j.append(i - 1)
+                if i < len(scheduled) - 1:
+                    possible_j.append(i + 1)
+                if possible_j:
+                    j = random.choice(possible_j)
                     program_a = scheduled[i]
                     program_b = scheduled[j]
                     return swap(instance, self.solution, program_a, program_b)
