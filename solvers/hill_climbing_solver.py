@@ -39,7 +39,6 @@ class HillClimbingSolver(BaseSolver):
 
         if len(scheduled) >= 2:
             def swap_op():
-                print("Operator chosen: swap")
                 i = random.randrange(len(scheduled))
                 possible_j = []
                 if i > 0:
@@ -55,7 +54,6 @@ class HillClimbingSolver(BaseSolver):
             mutation_ops.append(swap_op)
 
         def shift_op():
-            print("Operator chosen: shift_borders")
             program = random.choice(scheduled)
             direction = random.choice(list(TargetBorder))
             mode = random.choice(list(Mode))
@@ -64,7 +62,6 @@ class HillClimbingSolver(BaseSolver):
         mutation_ops.append(shift_op)
 
         def replace_op():
-            print("Operator chosen: replace")
             return replace(self.solution, instance)
         mutation_ops.append(replace_op)
 
