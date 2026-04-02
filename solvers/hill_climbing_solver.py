@@ -58,8 +58,7 @@ class HillClimbingSolver(BaseSolver):
             direction = random.choice(list(TargetBorder))
             mode = random.choice(list(Mode))
             shamt = round(random.random() * config.MAX_SHIFT)
-            result = shift_borders(instance, self.solution, program, mode, direction, shamt)
-            return result if result is not None else self.solution
+            return shift_borders(instance, self.solution, program, mode, direction, shamt)
         mutation_ops.append(shift_op)
 
         def replace_op():

@@ -128,4 +128,3 @@ def _respects_genre_limit(
             return False
 
     return True
-

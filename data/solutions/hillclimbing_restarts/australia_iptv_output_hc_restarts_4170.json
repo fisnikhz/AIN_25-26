@@ -25,8 +25,8 @@
             "end": 120
         },
         {
-            "program_id": "bloombergtelevisio_leaders_with_francine_la_2026-01-04_0120",
-            "channel_id": 145,
+            "program_id": "hillsongchannel_au_life_today_with_james_ro_2026-01-04_0120",
+            "channel_id": 322,
             "start": 120,
             "end": 150
         },
@@ -79,8 +79,8 @@
             "end": 390
         },
         {
-            "program_id": "10peachmelbourne_a_friends_2026-01-04_0390",
-            "channel_id": 12,
+            "program_id": "9gemhobart_au_friends_2026-01-04_0390",
+            "channel_id": 61,
             "start": 390,
             "end": 420
         },
@@ -93,7 +93,7 @@
         {
             "program_id": "abcmedarwin_au_would_i_lie_to_you_2026-01-04_0457",
             "channel_id": 111,
-            "start": 459,
+            "start": 457,
             "end": 489
         },
         {
@@ -106,12 +106,12 @@
             "program_id": "7adelaide_au_seven_news_2026-01-04_0510",
             "channel_id": 22,
             "start": 520,
-            "end": 566
+            "end": 550
         },
         {
-            "program_id": "cnn_au_blueprint_2026-01-04_0570",
-            "channel_id": 160,
-            "start": 570,
+            "program_id": "7matebrisbane_au_big_bash_stars_v_renegad_2026-01-04_0480",
+            "channel_id": 50,
+            "start": 550,
             "end": 600
         },
         {
@@ -217,14 +217,14 @@
             "end": 1110
         },
         {
-            "program_id": "hillsongchannel_au_dr_curt_dodd_higher_aim_2026-01-04_1110",
-            "channel_id": 322,
+            "program_id": "sbsmelbourne_au_off_the_beaten_track_wit_2026-01-04_1110",
+            "channel_id": 401,
             "start": 1110,
             "end": 1140
         },
         {
-            "program_id": "7sydney_au_sunrise_early_news_2026-01-04_1140",
-            "channel_id": 37,
+            "program_id": "sbsfoodhobart_au_andrew_zimmern_s_wild_ga_2026-01-04_1140",
+            "channel_id": 395,
             "start": 1140,
             "end": 1170
         },

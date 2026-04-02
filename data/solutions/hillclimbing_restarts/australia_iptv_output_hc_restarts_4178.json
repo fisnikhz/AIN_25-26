@@ -25,8 +25,8 @@
             "end": 120
         },
         {
-            "program_id": "bloombergtelevisio_leaders_with_francine_la_2026-01-04_0120",
-            "channel_id": 145,
+            "program_id": "hillsongchannel_au_life_today_with_james_ro_2026-01-04_0120",
+            "channel_id": 322,
             "start": 120,
             "end": 150
         },
@@ -79,8 +79,8 @@
             "end": 390
         },
         {
-            "program_id": "10peachmelbourne_a_friends_2026-01-04_0390",
-            "channel_id": 12,
+            "program_id": "9gemhobart_au_friends_2026-01-04_0390",
+            "channel_id": 61,
             "start": 390,
             "end": 420
         },
@@ -93,7 +93,7 @@
         {
             "program_id": "abcmedarwin_au_would_i_lie_to_you_2026-01-04_0457",
             "channel_id": 111,
-            "start": 459,
+            "start": 457,
             "end": 489
         },
         {
@@ -106,11 +106,11 @@
             "program_id": "7adelaide_au_seven_news_2026-01-04_0510",
             "channel_id": 22,
             "start": 520,
-            "end": 566
+            "end": 550
         },
         {
-            "program_id": "cnn_au_blueprint_2026-01-04_0570",
-            "channel_id": 160,
+            "program_id": "10perth_au_deal_or_no_deal_2026-01-04_0570",
+            "channel_id": 15,
             "start": 570,
             "end": 600
         },

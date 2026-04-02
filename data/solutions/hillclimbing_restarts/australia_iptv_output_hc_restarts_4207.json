@@ -79,8 +79,8 @@
             "end": 390
         },
         {
-            "program_id": "10peachmelbourne_a_friends_2026-01-04_0390",
-            "channel_id": 12,
+            "program_id": "9gemcanberra_au_friends_2026-01-04_0390",
+            "channel_id": 60,
             "start": 390,
             "end": 420
         },
@@ -100,13 +100,13 @@
             "program_id": "sbsvicelandcanberr_icons_unearthed_2026-01-04_0465",
             "channel_id": 407,
             "start": 489,
-            "end": 520
+            "end": 519
         },
         {
-            "program_id": "7adelaide_au_seven_news_2026-01-04_0510",
-            "channel_id": 22,
-            "start": 520,
-            "end": 566
+            "program_id": "nsw_sydneyfoxsport_full_time_live_4_1_26_2026-01-04_0540",
+            "channel_id": 350,
+            "start": 540,
+            "end": 570
         },
         {
             "program_id": "cnn_au_blueprint_2026-01-04_0570",
@@ -217,14 +217,14 @@
             "end": 1110
         },
         {
-            "program_id": "hillsongchannel_au_dr_curt_dodd_higher_aim_2026-01-04_1110",
-            "channel_id": 322,
+            "program_id": "sbssydney_au_off_the_beaten_track_wit_2026-01-04_1110",
+            "channel_id": 403,
             "start": 1110,
             "end": 1140
         },
         {
-            "program_id": "7sydney_au_sunrise_early_news_2026-01-04_1140",
-            "channel_id": 37,
+            "program_id": "seven_au_sunrise_early_news_2026-01-04_1140",
+            "channel_id": 450,
             "start": 1140,
             "end": 1170
         },
@@ -241,10 +241,10 @@
             "end": 1320
         },
         {
-            "program_id": "10boldbrisbane_au_home_shopping_2026-01-04_1320",
+            "program_id": "10boldbrisbane_au_reel_action_2026-01-04_1380",
             "channel_id": 1,
-            "start": 1320,
-            "end": 1350
+            "start": 1380,
+            "end": 1410
         }
     ]
 }

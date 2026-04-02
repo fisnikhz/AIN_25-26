@@ -93,7 +93,7 @@
         {
             "program_id": "abcmedarwin_au_would_i_lie_to_you_2026-01-04_0457",
             "channel_id": 111,
-            "start": 459,
+            "start": 457,
             "end": 489
         },
         {
@@ -106,12 +106,12 @@
             "program_id": "7adelaide_au_seven_news_2026-01-04_0510",
             "channel_id": 22,
             "start": 520,
-            "end": 566
+            "end": 550
         },
         {
-            "program_id": "cnn_au_blueprint_2026-01-04_0570",
-            "channel_id": 160,
-            "start": 570,
+            "program_id": "7matebrisbane_au_big_bash_stars_v_renegad_2026-01-04_0480",
+            "channel_id": 50,
+            "start": 550,
             "end": 600
         },
         {
@@ -235,14 +235,14 @@
             "end": 1200
         },
         {
-            "program_id": "10boldbrisbane_au_home_shopping_2026-01-04_1290",
-            "channel_id": 1,
+            "program_id": "10boldadelaide_au_home_shopping_2026-01-04_1290",
+            "channel_id": 0,
             "start": 1290,
             "end": 1320
         },
         {
-            "program_id": "10boldbrisbane_au_home_shopping_2026-01-04_1320",
-            "channel_id": 1,
+            "program_id": "10boldadelaide_au_home_shopping_2026-01-04_1320",
+            "channel_id": 0,
             "start": 1320,
             "end": 1350
         }
