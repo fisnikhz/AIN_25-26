@@ -15,41 +15,7 @@
 
 Ky repository është krijuar për lëndën Algoritmet e inspiruara nga natyra për vitin akademik 2025/26. Repository përmban të gjitha zgjidhjet, kodet dhe iterimet e grupeve për secilën javë të lëndës.
 
-## 📋 Detyrat e Implementuara
-
-### Hill Climbing me Random Restarts & Insert Operator
-- **File kryesor**: `run_hill_climbing_restarts.py` 
-- **Solver**: `solvers/hill_climbing_restarts_solver.py`
-- **Insert Operator**: `operators/insert.py`
-
-#### Karakteristika:
-- ✅ Random restarts me parametër të konfigurueshëm
-- ✅ Insertion operator çdo N iteracione
-- ✅ HashMap data structures për performance  
-- ✅ Event-based gap detection
-- ✅ Comprehensive constraint validation
-- ✅ True randomness me timestamp seeds
-
-#### Përdorimi:
-```bash
-# Direct execution me file argument
-python run_hill_climbing_restarts.py data/input/australia_iptv.json
-
-# Interactive file selection  
-python run_hill_climbing_restarts.py
-```
-
-#### Konfigurimi:
-Ndrysho parametrat në `config/config.py`:
-```python
-NUM_RESTARTS = 10          # Random restarts
-INSERTION_INTERVAL = 50    # Insert çdo N iteracione  
-MAX_ITERATIONS = 500       # Max iter per restart
-```
-
-📖 **Dokumentim i plotë**: Shih `README_DETYRA_E_PLOTE.md`
-
---- Instruksione për setup dhe workflow në vazhdim të projektit
+## Instruksione për setup dhe workflow në vazhdim të projektit
 
 Hap projektin në editor (VS Code, PyCharm, etj.), pastaj bëni pull nga branch-i kryesor (`main`).
 
