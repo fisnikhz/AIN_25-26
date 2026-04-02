@@ -1,0 +1,174 @@
+{
+  "opening_time": 0,
+  "closing_time": 90,
+  "min_duration": 10,
+  "max_consecutive_genre": 2,
+  "channels_count": 4,
+  "switch_penalty": 1,
+  "termination_penalty": 2,
+  "priority_blocks": [
+    {
+      "start": 20,
+      "end": 60,
+      "allowed_channels": [0, 1]
+    }
+  ],
+  "time_preferences": [
+    {
+      "start": 0,
+      "end": 30,
+      "preferred_genre": "news",
+      "bonus": 3
+    },
+    {
+      "start": 30,
+      "end": 60,
+      "preferred_genre": "entertainment",
+      "bonus": 3
+    },
+    {
+      "start": 60,
+      "end": 90,
+      "preferred_genre": "sports",
+      "bonus": 4
+    }
+  ],
+  "channels": [
+    {
+      "channel_id": 0,
+      "channel_name": "Channel_0",
+      "programs": [
+        {
+          "program_id": "p0_1",
+          "start": 0,
+          "end": 15,
+          "genre": "news",
+          "score": 6
+        },
+        {
+          "program_id": "p0_2",
+          "start": 15,
+          "end": 30,
+          "genre": "news",
+          "score": 6
+        },
+        {
+          "program_id": "p0_3",
+          "start": 30,
+          "end": 45,
+          "genre": "entertainment",
+          "score": 5
+        },
+        {
+          "program_id": "p0_4",
+          "start": 45,
+          "end": 60,
+          "genre": "sports",
+          "score": 7
+        }
+      ]
+    },
+    {
+      "channel_id": 1,
+      "channel_name": "Channel_1",
+      "programs": [
+        {
+          "program_id": "p1_1",
+          "start": 0,
+          "end": 10,
+          "genre": "documentary",
+          "score": 7
+        },
+        {
+          "program_id": "p1_2",
+          "start": 10,
+          "end": 25,
+          "genre": "entertainment",
+          "score": 9
+        },
+        {
+          "program_id": "p1_3",
+          "start": 25,
+          "end": 40,
+          "genre": "entertainment",
+          "score": 6
+        },
+        {
+          "program_id": "p1_4",
+          "start": 40,
+          "end": 60,
+          "genre": "sports",
+          "score": 10
+        },
+        {
+          "program_id": "p1_5",
+          "start": 60,
+          "end": 80,
+          "genre": "music",
+          "score": 6
+        }
+      ]
+    },
+    {
+      "channel_id": 2,
+      "channel_name": "Channel_2",
+      "programs": [
+        {
+          "program_id": "p2_1",
+          "start": 0,
+          "end": 20,
+          "genre": "news",
+          "score": 9
+        },
+        {
+          "program_id": "p2_2",
+          "start": 20,
+          "end": 35,
+          "genre": "documentary",
+          "score": 9
+        },
+        {
+          "program_id": "p2_3",
+          "start": 35,
+          "end": 55,
+          "genre": "entertainment",
+          "score": 10
+        }
+      ]
+    },
+    {
+      "channel_id": 3,
+      "channel_name": "Channel_3",
+      "programs": [
+        {
+          "program_id": "p3_1",
+          "start": 0,
+          "end": 20,
+          "genre": "news",
+          "score": 8
+        },
+        {
+          "program_id": "p3_2",
+          "start": 20,
+          "end": 35,
+          "genre": "entertainment",
+          "score": 8
+        },
+        {
+          "program_id": "p3_3",
+          "start": 35,
+          "end": 55,
+          "genre": "sports",
+          "score": 9
+        },
+        {
+          "program_id": "p3_4",
+          "start": 55,
+          "end": 75,
+          "genre": "sports",
+          "score": 9
+        }
+      ]
+    }
+  ]
+}
