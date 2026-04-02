@@ -36,7 +36,7 @@ def main():
     instance = InstanceParser(instance_path).parse()
 
     print("\n=== Select Solution File ===")
-    solution_path = select_file("data/solutions/constructiveapproach")
+    solution_path = select_file("data/solutions/hillclimbing")
     schedule = SolutionParser(solution_path).parse()
 
     try:
@@ -65,14 +65,14 @@ def main():
     solver = HillClimbingSolver(solution)
     best_solution = solver.solve(instance)
 
-    print(f"New hill climbing fitness: {best_solution.fitness}")
+    print(f"New hill climbing heuristic fitness: {best_solution.fitness}")
 
     instance_name = Path(instance_path).stem.replace("_input", "")
-    output_path = Path("data/solutions/hillclimbing") / (
-        f"{instance_name}_output_hillclimbing_{int(best_solution.fitness)}.json"
+    output_path = Path("data/solutions/hillclimbing_heuristic") / (
+        f"{instance_name}_output_hillclimbing_heuristic_{int(best_solution.fitness)}.json"
     )
     save_solution(best_solution.selected, output_path)
-    print(f"Hill climbing solution saved to: {output_path}")
+    print(f"Hill climbing heuristic solution saved to: {output_path}")
 
 
 if __name__ == "__main__":
