@@ -19,6 +19,12 @@ def shift_borders(instance: InstanceData, state: Solution, program: ScheduledPro
     copy = deepcopy(state)
     
     max_shift = _max_shift_distance(instance, copy, program, mode, border)
+    
+    # SIGURIA: Nëse max_shift është None, rikthe zgjidhjen origjinale
+    if max_shift is None:
+        print(f"⚠️  SHIFT SKIPPED: max_shift is None for program {program.program_id}")
+        return state
+    
     # print(f"shamt={shamt}, max_shift={max_shift}")
     shamt = min(abs(shamt), abs(max_shift))
     
