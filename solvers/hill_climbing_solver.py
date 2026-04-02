@@ -24,6 +24,7 @@ class HillClimbingSolver(BaseSolver):
 
         for restart in range(config.RESTARTS):
             self.solution = deepcopy(initial_solution)
+            stagnant_iterations = 0
 
             for i in range(config.MAX_ITERATIONS):
                 neighbor = self.__mutate(instance)
@@ -34,9 +35,16 @@ class HillClimbingSolver(BaseSolver):
                         f"Fitness improved! {self.solution.fitness} -> {neighbor.fitness}"
                     )
                     self.solution = neighbor
+                    stagnant_iterations = 0
                 elif neighbor.fitness == self.solution.fitness:
                     # Still accept equal moves to explore the plateau.
                     self.solution = neighbor
+                    stagnant_iterations += 1
+                else:
+                    stagnant_iterations += 1
+
+                if stagnant_iterations >= config.MAX_STAGNANT_ITERATIONS:
+                    break
 
             if self.solution.fitness > best_solution.fitness:
                 best_solution = deepcopy(self.solution)
@@ -57,15 +65,17 @@ class HillClimbingSolver(BaseSolver):
         return self.__random_mutate(instance, scheduled)
 
     def __heuristic_mutate(self, instance: InstanceData) -> Solution:
-        candidates = [
-            replace_heuristic(self.solution, instance),
-            swap_heuristic(instance, self.solution),
-            shift_borders_heuristic(instance, self.solution),
-        ]
         current_fitness = self.solution.fitness
         best_neighbor = self.solution
+        operations = [
+            lambda solution, inst: shift_borders_heuristic(inst, solution),
+            lambda solution, inst: replace_heuristic(solution, inst),
+        ]
+        if random.random() < 0.2:
+            operations.append(lambda solution, inst: swap_heuristic(inst, solution))
 
-        for neighbor in candidates:
+        for operation in operations:
+            neighbor = operation(self.solution, instance)
             if neighbor.fitness > best_neighbor.fitness:
                 best_neighbor = neighbor
             elif (

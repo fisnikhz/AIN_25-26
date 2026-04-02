@@ -79,7 +79,7 @@ def swap_heuristic(instance: InstanceData, state: Solution) -> Solution:
 
     ranked_candidates.sort(key=lambda item: (item[0], item[1]), reverse=True)
 
-    for _, _, left_program, right_program in ranked_candidates:
+    for _, _, left_program, right_program in ranked_candidates[:3]:
         neighbor = swap(instance, state, left_program, right_program)
         if neighbor is not state:
             return neighbor

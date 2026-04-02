@@ -36,7 +36,7 @@ def main():
     instance = InstanceParser(instance_path).parse()
 
     print("\n=== Select Solution File ===")
-    solution_path = select_file("data/solutions/hillclimbing")
+    solution_path = select_file("data/solutions/hillclimbing_heuristic")
     schedule = SolutionParser(solution_path).parse()
 
     try:
