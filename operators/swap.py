@@ -3,6 +3,11 @@ from copy import deepcopy
 from models.instance.instance_data import InstanceData
 from models.solution.scheduled_program import ScheduledProgram
 from models.solution.solution import Solution
+from utils.schedule_feasibility import (
+    build_program_lookup,
+    is_schedule_feasible,
+    sort_schedule,
+)
 
 
 def swap(
@@ -31,13 +36,55 @@ def swap(
     a.start, b.start = b.start, a.start
     a.end, b.end = b.end, a.end
 
-    copy.selected.scheduled_programs = _sorted_schedule(copy.selected.scheduled_programs)
+    copy.selected.scheduled_programs = sort_schedule(copy.selected.scheduled_programs)
 
-    if not _is_feasible_swap(copy.selected.scheduled_programs, instance):
+    if not is_schedule_feasible(copy.selected.scheduled_programs, instance):
         return state
 
     copy._fitness = None
     return copy
+
+
+def swap_heuristic(instance: InstanceData, state: Solution) -> Solution:
+    ordered = sort_schedule(list(state.selected.scheduled_programs))
+    if len(ordered) < 2:
+        return state
+
+    switch_points = _find_switch_points(ordered)
+    if not switch_points:
+        return state
+
+    lookup = build_program_lookup(instance)
+    ranked_candidates = []
+
+    for left_index in switch_points:
+        right_index = left_index + 1
+        if right_index >= len(ordered):
+            continue
+
+        before_switches = _boundary_switch_count(ordered, left_index)
+        after_switches = _boundary_switch_count_after_swap(ordered, left_index)
+        switch_gain = before_switches - after_switches
+
+        left_program = ordered[left_index]
+        right_program = ordered[right_index]
+        time_pref_gain = (
+            _scheduled_time_pref_bonus(right_program, left_program.start, left_program.end, instance, lookup)
+            + _scheduled_time_pref_bonus(left_program, right_program.start, right_program.end, instance, lookup)
+            - _scheduled_time_pref_bonus(left_program, left_program.start, left_program.end, instance, lookup)
+            - _scheduled_time_pref_bonus(right_program, right_program.start, right_program.end, instance, lookup)
+        )
+
+        ranked_candidates.append((switch_gain, time_pref_gain, left_program, right_program))
+
+    ranked_candidates.sort(key=lambda item: (item[0], item[1]), reverse=True)
+
+    for _, _, left_program, right_program in ranked_candidates[:3]:
+        neighbor = swap(instance, state, left_program, right_program)
+        if neighbor is not state:
+            return neighbor
+
+    return state
 
 
 def swap_two(
@@ -49,83 +96,44 @@ def swap_two(
     return swap(instance, state, program_a, program_b)
 
 
-def _sorted_schedule(schedule: list[ScheduledProgram]) -> list[ScheduledProgram]:
-    return sorted(
-        schedule,
-        key=lambda program: (program.start, program.end, program.channel_id, program.program_id),
-    )
+def _find_switch_points(schedule: list[ScheduledProgram]) -> list[int]:
+    return [
+        i for i in range(len(schedule) - 1)
+        if schedule[i].channel_id != schedule[i + 1].channel_id
+    ]
 
 
-def _is_feasible_swap(schedule: list[ScheduledProgram], instance: InstanceData) -> bool:
-    if not schedule:
-        return True
-
-    lookup = _instance_program_lookup(instance)
-
-    prev_end = None
-    for sp in schedule:
-        if sp.start < instance.opening_time or sp.end > instance.closing_time:
-            return False
-        if sp.start >= sp.end:
-            return False
-        if prev_end is not None and prev_end > sp.start:
-            return False
-        prev_end = sp.end
-
-        if not _respects_priority_blocks(sp.start, sp.end, sp.channel_id, instance):
-            return False
-
-        inst_p = lookup.get((sp.channel_id, sp.program_id))
-        if inst_p is None:
-            return False
-        if sp.start < inst_p.start or sp.end > inst_p.end:
-            return False
-        if (sp.end - sp.start) < instance.min_duration:
-            return False
-
-    if not _respects_genre_limit(schedule, instance, lookup):
-        return False
-
-    return True
+def _boundary_switch_count(schedule: list[ScheduledProgram], left_index: int) -> int:
+    boundaries = 0
+    for boundary_index in (left_index - 1, left_index, left_index + 1):
+        if 0 <= boundary_index < len(schedule) - 1:
+            if schedule[boundary_index].channel_id != schedule[boundary_index + 1].channel_id:
+                boundaries += 1
+    return boundaries
 
 
-def _respects_priority_blocks(start: int, end: int, channel_id: int, instance: InstanceData) -> bool:
-    for block in instance.priority_blocks:
-        overlaps = min(end, block.end) > max(start, block.start)
-        if overlaps and channel_id not in block.allowed_channels:
-            return False
-    return True
+def _boundary_switch_count_after_swap(schedule: list[ScheduledProgram], left_index: int) -> int:
+    swapped = list(schedule)
+    swapped[left_index], swapped[left_index + 1] = swapped[left_index + 1], swapped[left_index]
+    return _boundary_switch_count(swapped, left_index)
 
 
-def _instance_program_lookup(instance: InstanceData) -> dict[tuple[int, str], object]:
-    lookup = {}
-    for channel in instance.channels:
-        for program in channel.programs:
-            lookup[(channel.channel_id, program.program_id)] = program
-    return lookup
-
-
-def _respects_genre_limit(
-    schedule: list[ScheduledProgram],
+def _scheduled_time_pref_bonus(
+    scheduled_program: ScheduledProgram,
+    start: int,
+    end: int,
     instance: InstanceData,
     lookup: dict[tuple[int, str], object],
-) -> bool:
-    consecutive = 0
-    last_genre = None
+) -> float:
+    inst_program = lookup.get((scheduled_program.channel_id, scheduled_program.program_id))
+    if inst_program is None:
+        return 0.0
 
-    for scheduled_program in schedule:
-        inst_p = lookup.get((scheduled_program.channel_id, scheduled_program.program_id))
-        if inst_p is None:
-            return False
-        genre = inst_p.genre
-        if genre == last_genre:
-            consecutive += 1
-        else:
-            last_genre = genre
-            consecutive = 1
-
-        if consecutive > instance.max_consecutive_genre:
-            return False
-
-    return True
-
+    bonus = 0.0
+    for preference in instance.time_preferences:
+        if inst_program.genre != preference.preferred_genre:
+            continue
+        overlap = min(end, preference.end) - max(start, preference.start)
+        if overlap >= instance.min_duration:
+            bonus += preference.bonus
+    return bonus

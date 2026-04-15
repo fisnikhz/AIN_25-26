@@ -1,0 +1,814 @@
+[
+  {
+    "instance": "australia_iptv",
+    "initial_score": 4208.0,
+    "best_score": 4215.0,
+    "solution_file": "data/solutions/hillclimbing_heuristic/australia_iptv_output_hillclimbing_heuristic_4208.json",
+    "runs": [
+      {
+        "test": 1,
+        "score": 4215.0,
+        "runtime_seconds": 41.14971083402634
+      },
+      {
+        "test": 2,
+        "score": 4208.0,
+        "runtime_seconds": 40.29851958400104
+      },
+      {
+        "test": 3,
+        "score": 4214.0,
+        "runtime_seconds": 41.787845249986276
+      },
+      {
+        "test": 4,
+        "score": 4209.0,
+        "runtime_seconds": 44.540798165951855
+      },
+      {
+        "test": 5,
+        "score": 4208.0,
+        "runtime_seconds": 39.957746666972525
+      },
+      {
+        "test": 6,
+        "score": 4210.0,
+        "runtime_seconds": 42.5532659169985
+      },
+      {
+        "test": 7,
+        "score": 4209.0,
+        "runtime_seconds": 43.67325599992182
+      },
+      {
+        "test": 8,
+        "score": 4208.0,
+        "runtime_seconds": 42.39325199997984
+      },
+      {
+        "test": 9,
+        "score": 4214.0,
+        "runtime_seconds": 44.61741079099011
+      },
+      {
+        "test": 10,
+        "score": 4215.0,
+        "runtime_seconds": 40.2761347910855
+      }
+    ]
+  },
+  {
+    "instance": "canada_pw",
+    "initial_score": 4628.0,
+    "best_score": 4628.0,
+    "solution_file": "data/solutions/hillclimbing_heuristic/canada_pw_output_hillclimbing_heuristic_4628.json",
+    "runs": [
+      {
+        "test": 1,
+        "score": 4628.0,
+        "runtime_seconds": 42.14014912489802
+      },
+      {
+        "test": 2,
+        "score": 4628.0,
+        "runtime_seconds": 41.418926290934905
+      },
+      {
+        "test": 3,
+        "score": 4628.0,
+        "runtime_seconds": 42.813380750012584
+      },
+      {
+        "test": 4,
+        "score": 4628.0,
+        "runtime_seconds": 41.82636462489609
+      },
+      {
+        "test": 5,
+        "score": 4628.0,
+        "runtime_seconds": 40.948846417013556
+      },
+      {
+        "test": 6,
+        "score": 4628.0,
+        "runtime_seconds": 43.53151895897463
+      },
+      {
+        "test": 7,
+        "score": 4628.0,
+        "runtime_seconds": 40.737778083072044
+      },
+      {
+        "test": 8,
+        "score": 4628.0,
+        "runtime_seconds": 41.660684249945916
+      },
+      {
+        "test": 9,
+        "score": 4628.0,
+        "runtime_seconds": 43.92941716592759
+      },
+      {
+        "test": 10,
+        "score": 4628.0,
+        "runtime_seconds": 41.9731772079831
+      }
+    ]
+  },
+  {
+    "instance": "china_pw",
+    "initial_score": 2871.0,
+    "best_score": 2871.0,
+    "solution_file": "data/solutions/hillclimbing_heuristic/china_pw_output_hillclimbing_heuristic_2871.json",
+    "runs": [
+      {
+        "test": 1,
+        "score": 2871.0,
+        "runtime_seconds": 76.16074950003531
+      },
+      {
+        "test": 2,
+        "score": 2871.0,
+        "runtime_seconds": 72.14595875004306
+      },
+      {
+        "test": 3,
+        "score": 2871.0,
+        "runtime_seconds": 70.82026799989399
+      },
+      {
+        "test": 4,
+        "score": 2871.0,
+        "runtime_seconds": 69.8185405000113
+      },
+      {
+        "test": 5,
+        "score": 2871.0,
+        "runtime_seconds": 80.15274941595271
+      },
+      {
+        "test": 6,
+        "score": 2871.0,
+        "runtime_seconds": 71.59407120803371
+      },
+      {
+        "test": 7,
+        "score": 2871.0,
+        "runtime_seconds": 74.69068762497045
+      },
+      {
+        "test": 8,
+        "score": 2871.0,
+        "runtime_seconds": 71.60535474994686
+      },
+      {
+        "test": 9,
+        "score": 2871.0,
+        "runtime_seconds": 76.01237829204183
+      },
+      {
+        "test": 10,
+        "score": 2871.0,
+        "runtime_seconds": 78.68150637496728
+      }
+    ]
+  },
+  {
+    "instance": "croatia_tv",
+    "initial_score": 2208.0,
+    "best_score": 2208.0,
+    "solution_file": "data/solutions/hillclimbing_heuristic/croatia_tv_output_hillclimbing_heuristic_2208.json",
+    "runs": [
+      {
+        "test": 1,
+        "score": 2208.0,
+        "runtime_seconds": 1.1004850829485804
+      },
+      {
+        "test": 2,
+        "score": 2208.0,
+        "runtime_seconds": 1.0514343339018524
+      },
+      {
+        "test": 3,
+        "score": 2208.0,
+        "runtime_seconds": 1.068052540998906
+      },
+      {
+        "test": 4,
+        "score": 2208.0,
+        "runtime_seconds": 1.0610608339775354
+      },
+      {
+        "test": 5,
+        "score": 2208.0,
+        "runtime_seconds": 1.0598379159346223
+      },
+      {
+        "test": 6,
+        "score": 2208.0,
+        "runtime_seconds": 1.0962807089090347
+      },
+      {
+        "test": 7,
+        "score": 2208.0,
+        "runtime_seconds": 1.0593418329954147
+      },
+      {
+        "test": 8,
+        "score": 2208.0,
+        "runtime_seconds": 1.0413748749997467
+      },
+      {
+        "test": 9,
+        "score": 2208.0,
+        "runtime_seconds": 1.1344310840358958
+      },
+      {
+        "test": 10,
+        "score": 2208.0,
+        "runtime_seconds": 1.0530757079832256
+      }
+    ]
+  },
+  {
+    "instance": "france_iptv",
+    "initial_score": 4370.0,
+    "best_score": 4383.0,
+    "solution_file": "data/solutions/hillclimbing_heuristic/france_iptv_output_hillclimbing_heuristic_4370.json",
+    "runs": [
+      {
+        "test": 1,
+        "score": 4370.0,
+        "runtime_seconds": 29.21987666701898
+      },
+      {
+        "test": 2,
+        "score": 4370.0,
+        "runtime_seconds": 30.720395540934987
+      },
+      {
+        "test": 3,
+        "score": 4370.0,
+        "runtime_seconds": 30.832102832966484
+      },
+      {
+        "test": 4,
+        "score": 4370.0,
+        "runtime_seconds": 29.222475208924152
+      },
+      {
+        "test": 5,
+        "score": 4370.0,
+        "runtime_seconds": 29.66090704104863
+      },
+      {
+        "test": 6,
+        "score": 4370.0,
+        "runtime_seconds": 29.748214999912307
+      },
+      {
+        "test": 7,
+        "score": 4370.0,
+        "runtime_seconds": 30.585084666032344
+      },
+      {
+        "test": 8,
+        "score": 4383.0,
+        "runtime_seconds": 32.578879542066716
+      },
+      {
+        "test": 9,
+        "score": 4370.0,
+        "runtime_seconds": 31.0198289580876
+      },
+      {
+        "test": 10,
+        "score": 4370.0,
+        "runtime_seconds": 32.743912250036374
+      }
+    ]
+  },
+  {
+    "instance": "germany_tv",
+    "initial_score": 1553.0,
+    "best_score": 1553.0,
+    "solution_file": "data/solutions/hillclimbing_heuristic/germany_tv_output_hillclimbing_heuristic_1553.json",
+    "runs": [
+      {
+        "test": 1,
+        "score": 1553.0,
+        "runtime_seconds": 0.41191250004339963
+      },
+      {
+        "test": 2,
+        "score": 1553.0,
+        "runtime_seconds": 0.4189636670053005
+      },
+      {
+        "test": 3,
+        "score": 1553.0,
+        "runtime_seconds": 0.41217462497297674
+      },
+      {
+        "test": 4,
+        "score": 1553.0,
+        "runtime_seconds": 0.43057562492322177
+      },
+      {
+        "test": 5,
+        "score": 1553.0,
+        "runtime_seconds": 0.4388076670002192
+      },
+      {
+        "test": 6,
+        "score": 1553.0,
+        "runtime_seconds": 0.4120808750158176
+      },
+      {
+        "test": 7,
+        "score": 1553.0,
+        "runtime_seconds": 0.3986532500712201
+      },
+      {
+        "test": 8,
+        "score": 1553.0,
+        "runtime_seconds": 0.40655700000934303
+      },
+      {
+        "test": 9,
+        "score": 1553.0,
+        "runtime_seconds": 0.3935908330604434
+      },
+      {
+        "test": 10,
+        "score": 1553.0,
+        "runtime_seconds": 0.40688825002871454
+      }
+    ]
+  },
+  {
+    "instance": "kosovo_tv",
+    "initial_score": 2587.0,
+    "best_score": 2587.0,
+    "solution_file": "data/solutions/hillclimbing_heuristic/kosovo_tv_output_hillclimbing_heuristic_2587.json",
+    "runs": [
+      {
+        "test": 1,
+        "score": 2587.0,
+        "runtime_seconds": 0.9378057499416173
+      },
+      {
+        "test": 2,
+        "score": 2587.0,
+        "runtime_seconds": 0.9898326660040766
+      },
+      {
+        "test": 3,
+        "score": 2587.0,
+        "runtime_seconds": 0.9999915829394013
+      },
+      {
+        "test": 4,
+        "score": 2587.0,
+        "runtime_seconds": 1.024542291997932
+      },
+      {
+        "test": 5,
+        "score": 2587.0,
+        "runtime_seconds": 0.9624489159323275
+      },
+      {
+        "test": 6,
+        "score": 2587.0,
+        "runtime_seconds": 0.9979731659404933
+      },
+      {
+        "test": 7,
+        "score": 2587.0,
+        "runtime_seconds": 1.0121234999969602
+      },
+      {
+        "test": 8,
+        "score": 2587.0,
+        "runtime_seconds": 0.9791420419933274
+      },
+      {
+        "test": 9,
+        "score": 2587.0,
+        "runtime_seconds": 1.0032695829868317
+      },
+      {
+        "test": 10,
+        "score": 2587.0,
+        "runtime_seconds": 0.9346614999230951
+      }
+    ]
+  },
+  {
+    "instance": "netherlands_tv",
+    "initial_score": 2636.0,
+    "best_score": 2636.0,
+    "solution_file": "data/solutions/hillclimbing_heuristic/netherlands_tv_output_hillclimbing_heuristic_2636.json",
+    "runs": [
+      {
+        "test": 1,
+        "score": 2636.0,
+        "runtime_seconds": 0.9905068749794737
+      },
+      {
+        "test": 2,
+        "score": 2636.0,
+        "runtime_seconds": 1.0622268329607323
+      },
+      {
+        "test": 3,
+        "score": 2636.0,
+        "runtime_seconds": 1.0083616669289768
+      },
+      {
+        "test": 4,
+        "score": 2636.0,
+        "runtime_seconds": 1.0141205829568207
+      },
+      {
+        "test": 5,
+        "score": 2636.0,
+        "runtime_seconds": 0.9855996660189703
+      },
+      {
+        "test": 6,
+        "score": 2636.0,
+        "runtime_seconds": 1.0284789169672877
+      },
+      {
+        "test": 7,
+        "score": 2636.0,
+        "runtime_seconds": 1.0585939170559868
+      },
+      {
+        "test": 8,
+        "score": 2636.0,
+        "runtime_seconds": 0.9982365840114653
+      },
+      {
+        "test": 9,
+        "score": 2636.0,
+        "runtime_seconds": 1.0095136249437928
+      },
+      {
+        "test": 10,
+        "score": 2636.0,
+        "runtime_seconds": 1.011267583933659
+      }
+    ]
+  },
+  {
+    "instance": "singapore_pw",
+    "initial_score": 4328.0,
+    "best_score": 4328.0,
+    "solution_file": "data/solutions/hillclimbing_heuristic/singapore_pw_output_hillclimbing_heuristic_4328.json",
+    "runs": [
+      {
+        "test": 1,
+        "score": 4328.0,
+        "runtime_seconds": 18.737899916013703
+      },
+      {
+        "test": 2,
+        "score": 4328.0,
+        "runtime_seconds": 19.55925350007601
+      },
+      {
+        "test": 3,
+        "score": 4328.0,
+        "runtime_seconds": 19.64825504203327
+      },
+      {
+        "test": 4,
+        "score": 4328.0,
+        "runtime_seconds": 19.81709712499287
+      },
+      {
+        "test": 5,
+        "score": 4328.0,
+        "runtime_seconds": 18.788773166015744
+      },
+      {
+        "test": 6,
+        "score": 4328.0,
+        "runtime_seconds": 19.507637625094503
+      },
+      {
+        "test": 7,
+        "score": 4328.0,
+        "runtime_seconds": 18.80050858296454
+      },
+      {
+        "test": 8,
+        "score": 4328.0,
+        "runtime_seconds": 20.036860166001134
+      },
+      {
+        "test": 9,
+        "score": 4328.0,
+        "runtime_seconds": 20.154777333023958
+      },
+      {
+        "test": 10,
+        "score": 4328.0,
+        "runtime_seconds": 18.67302429198753
+      }
+    ]
+  },
+  {
+    "instance": "spain_iptv",
+    "initial_score": 4555.0,
+    "best_score": 4555.0,
+    "solution_file": "data/solutions/hillclimbing_heuristic/spain_iptv_output_hillclimbing_heuristic_4555.json",
+    "runs": [
+      {
+        "test": 1,
+        "score": 4555.0,
+        "runtime_seconds": 20.663337499951012
+      },
+      {
+        "test": 2,
+        "score": 4555.0,
+        "runtime_seconds": 20.98955824994482
+      },
+      {
+        "test": 3,
+        "score": 4555.0,
+        "runtime_seconds": 20.59269595798105
+      },
+      {
+        "test": 4,
+        "score": 4555.0,
+        "runtime_seconds": 21.296854542102665
+      },
+      {
+        "test": 5,
+        "score": 4555.0,
+        "runtime_seconds": 21.989269917015918
+      },
+      {
+        "test": 6,
+        "score": 4555.0,
+        "runtime_seconds": 21.139539249939844
+      },
+      {
+        "test": 7,
+        "score": 4555.0,
+        "runtime_seconds": 21.86154179100413
+      },
+      {
+        "test": 8,
+        "score": 4555.0,
+        "runtime_seconds": 23.709908958990127
+      },
+      {
+        "test": 9,
+        "score": 4555.0,
+        "runtime_seconds": 21.832635333994403
+      },
+      {
+        "test": 10,
+        "score": 4555.0,
+        "runtime_seconds": 21.734222792088985
+      }
+    ]
+  },
+  {
+    "instance": "toy",
+    "initial_score": 380.0,
+    "best_score": 380.0,
+    "solution_file": "data/solutions/hillclimbing_heuristic/toy_output_hillclimbing_heuristic_380.json",
+    "runs": [
+      {
+        "test": 1,
+        "score": 380.0,
+        "runtime_seconds": 0.06544699997175485
+      },
+      {
+        "test": 2,
+        "score": 380.0,
+        "runtime_seconds": 0.06509933294728398
+      },
+      {
+        "test": 3,
+        "score": 380.0,
+        "runtime_seconds": 0.062248250003904104
+      },
+      {
+        "test": 4,
+        "score": 380.0,
+        "runtime_seconds": 0.06274020893033594
+      },
+      {
+        "test": 5,
+        "score": 380.0,
+        "runtime_seconds": 0.0640850419877097
+      },
+      {
+        "test": 6,
+        "score": 380.0,
+        "runtime_seconds": 0.06309720897115767
+      },
+      {
+        "test": 7,
+        "score": 380.0,
+        "runtime_seconds": 0.0652875000378117
+      },
+      {
+        "test": 8,
+        "score": 380.0,
+        "runtime_seconds": 0.06347504199948162
+      },
+      {
+        "test": 9,
+        "score": 380.0,
+        "runtime_seconds": 0.0627257089363411
+      },
+      {
+        "test": 10,
+        "score": 380.0,
+        "runtime_seconds": 0.06557679199613631
+      }
+    ]
+  },
+  {
+    "instance": "uk_iptv",
+    "initial_score": 5194.0,
+    "best_score": 5199.0,
+    "solution_file": "data/solutions/hillclimbing_heuristic/uk_iptv_output_hillclimbing_heuristic_5194.json",
+    "runs": [
+      {
+        "test": 1,
+        "score": 5194.0,
+        "runtime_seconds": 60.87524570804089
+      },
+      {
+        "test": 2,
+        "score": 5194.0,
+        "runtime_seconds": 68.11585670791101
+      },
+      {
+        "test": 3,
+        "score": 5194.0,
+        "runtime_seconds": 69.90416999999434
+      },
+      {
+        "test": 4,
+        "score": 5198.0,
+        "runtime_seconds": 75.98960695893038
+      },
+      {
+        "test": 5,
+        "score": 5195.0,
+        "runtime_seconds": 68.62701762502547
+      },
+      {
+        "test": 6,
+        "score": 5198.0,
+        "runtime_seconds": 65.75984658300877
+      },
+      {
+        "test": 7,
+        "score": 5198.0,
+        "runtime_seconds": 70.1872772090137
+      },
+      {
+        "test": 8,
+        "score": 5199.0,
+        "runtime_seconds": 70.82346074993256
+      },
+      {
+        "test": 9,
+        "score": 5194.0,
+        "runtime_seconds": 66.02615341707133
+      },
+      {
+        "test": 10,
+        "score": 5194.0,
+        "runtime_seconds": 68.40825137495995
+      }
+    ]
+  },
+  {
+    "instance": "uk_tv",
+    "initial_score": 2266.0,
+    "best_score": 2266.0,
+    "solution_file": "data/solutions/hillclimbing_heuristic/uk_tv_output_hillclimbing_heuristic_2266.json",
+    "runs": [
+      {
+        "test": 1,
+        "score": 2266.0,
+        "runtime_seconds": 7.401214833022095
+      },
+      {
+        "test": 2,
+        "score": 2266.0,
+        "runtime_seconds": 7.582295082975179
+      },
+      {
+        "test": 3,
+        "score": 2266.0,
+        "runtime_seconds": 7.464910625014454
+      },
+      {
+        "test": 4,
+        "score": 2266.0,
+        "runtime_seconds": 7.624207874992862
+      },
+      {
+        "test": 5,
+        "score": 2266.0,
+        "runtime_seconds": 7.512181791942567
+      },
+      {
+        "test": 6,
+        "score": 2266.0,
+        "runtime_seconds": 7.564675125060603
+      },
+      {
+        "test": 7,
+        "score": 2266.0,
+        "runtime_seconds": 7.870284750009887
+      },
+      {
+        "test": 8,
+        "score": 2266.0,
+        "runtime_seconds": 7.603265332989395
+      },
+      {
+        "test": 9,
+        "score": 2266.0,
+        "runtime_seconds": 7.434142417041585
+      },
+      {
+        "test": 10,
+        "score": 2266.0,
+        "runtime_seconds": 7.636120792012662
+      }
+    ]
+  },
+  {
+    "instance": "usa_tv",
+    "initial_score": 3601.0,
+    "best_score": 3601.0,
+    "solution_file": "data/solutions/hillclimbing_heuristic/usa_tv_output_hillclimbing_heuristic_3601.json",
+    "runs": [
+      {
+        "test": 1,
+        "score": 3601.0,
+        "runtime_seconds": 91.70240183302667
+      },
+      {
+        "test": 2,
+        "score": 3601.0,
+        "runtime_seconds": 91.55578258296009
+      },
+      {
+        "test": 3,
+        "score": 3601.0,
+        "runtime_seconds": 84.46058449998964
+      },
+      {
+        "test": 4,
+        "score": 3601.0,
+        "runtime_seconds": 85.44973862497136
+      },
+      {
+        "test": 5,
+        "score": 3601.0,
+        "runtime_seconds": 82.1134145000251
+      },
+      {
+        "test": 6,
+        "score": 3601.0,
+        "runtime_seconds": 84.78273224993609
+      },
+      {
+        "test": 7,
+        "score": 3601.0,
+        "runtime_seconds": 87.393773082993
+      },
+      {
+        "test": 8,
+        "score": 3601.0,
+        "runtime_seconds": 87.33290929102805
+      },
+      {
+        "test": 9,
+        "score": 3601.0,
+        "runtime_seconds": 88.8966035839403
+      },
+      {
+        "test": 10,
+        "score": 3601.0,
+        "runtime_seconds": 86.11705691704992
+      }
+    ]
+  }
+]
