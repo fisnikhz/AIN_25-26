@@ -205,8 +205,8 @@
             "end": 1020
         },
         {
-            "program_id": "aljazeeraenglish_f_news_live_2026-01-04_1020",
-            "channel_id": 16,
+            "program_id": "tv7bordeaux_fr_cultivons_la_d_couverte_2026-01-04_1020",
+            "channel_id": 344,
             "start": 1020,
             "end": 1050
         },
@@ -271,16 +271,16 @@
             "end": 1350
         },
         {
-            "program_id": "museumtv_fr_mus_e_d_art_re_voir_2026-01-04_1350",
-            "channel_id": 225,
+            "program_id": "tv7bordeaux_fr_cultivons_la_d_couverte_2026-01-04_1350",
+            "channel_id": 344,
             "start": 1350,
             "end": 1380
         },
         {
-            "program_id": "polar_fr_g_om_trie_de_la_mort_sai_2026-01-04_1380",
-            "channel_id": 262,
+            "program_id": "superrtl_fr_new_york_unit_sp_ciale_2026-01-04_1380",
+            "channel_id": 322,
             "start": 1380,
-            "end": 1410
+            "end": 1430
         }
     ]
 }
