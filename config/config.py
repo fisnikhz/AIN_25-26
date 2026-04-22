@@ -1,6 +1,8 @@
 MAX_ITERATIONS = 500
 MAX_SHIFT = 10
 
-# Hill Climbing me Random Restarts parameters
-NUM_RESTARTS = 1           # Numri i random restarts (10 për diversitet të mirë)
-INSERTION_INTERVAL = 50     # Insertion çdo N iteracione (zvogëluar nga 100 për më shumë insertion)
+# GRASP parameters
+GRASP_TOTAL_TIME = 60          
+GRASP_P_PERCENTAGE = 30       
+GRASP_M_ITERATIONS = 200      
+GRASP_NO_IMPROVE_LIMIT = 50   
