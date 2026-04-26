@@ -1,6 +1,6 @@
 <table border="0">
  <tr>
-    <td><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/University_of_Prishtina_logo.svg/1200px-University_of_Prishtina_logo.svg.png" width="150" alt="University Logo" /></td>
+    <td><img src="https://en.wikipedia.org/wiki/University_of_Pristina#/media/File:University_of_Prishtina_logo.svg" width="150" alt="University Logo" /></td>
     <td>
       <p>Universiteti i Prishtinës</p>
       <p>Fakulteti i Inxhinierisë Elektrike dhe Kompjuterike</p>
@@ -19,10 +19,11 @@ Ky repository është krijuar për lëndën Algoritmet e inspiruara nga natyra p
 
 Hap projektin në editor (VS Code, PyCharm, etj.), pastaj bëni pull nga branch-i kryesor (`main`).
 
-Për çdo javë, secili grup ka një branch të dedikuar me emërtimin java_X, ku X përfaqëson numrin e javës (p.sh., `java_I`, `java_II`, …, `java_XV`).
+Në këtë repository po përdoren branch-e të dedikuara për grupet.
 
-Bëni merge të ndryshimeve nga branch-i `main` tek branch-i juaj java_X për të marrë versionin më të fundit të kodit.
+Bëni merge të ndryshimeve nga branch-i `main` tek branch-i i grupit tuaj për të marrë versionin më të fundit të kodit.
 
-Nëse keni nevojë për branch të ri, krijoni një branch të ri duke ndjekur formatin: java_X_[placeholder]
+Në fund të punës, krijoni pull request nga branch-i i grupit tuaj tek branch-i `main`. Pas rishikimit, ndryshimet bashkohen në `main`.
+branch të ri.
 
-Në fund të punës së javës, krijohet një pull request nga branch-i java_X tek branch-i `main`. Pas rishikimit, branch-i i javës bashkohet (merge) me branch-in kryesor (`main`).
+Në fund të punës së javës, krijohet një pull request nga branch-i ExampleBranch tek branch-i `main`. Pas rishikimit, branch-i i javës bashkohet (merge) me branch-in kryesor (`main`).
