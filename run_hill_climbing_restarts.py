@@ -22,7 +22,7 @@ from evaluators.base_evaluator import BaseEvaluator
 from models.solution.solution import Solution
 from utils.validator import validate_schedule_against_instance
 from solvers.hill_climbing_restarts_solver import HillClimbingRestartsSolver
-import config.config as config
+import config.hill_climbing_restarts_config as config
 
 
 def save_solution(schedule, output_path: Path):

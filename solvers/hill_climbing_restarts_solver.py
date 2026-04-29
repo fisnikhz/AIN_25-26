@@ -20,7 +20,7 @@ from operators.replace import replace
 from operators.shift_borders import shift_borders, TargetBorder, Mode
 from operators.swap import swap
 from operators.insert import insert, insert_best
-import config.config as config
+import config.hill_climbing_restarts_config as config
 
 
 class HillClimbingRestartsSolver(BaseSolver):

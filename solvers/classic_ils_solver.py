@@ -1,6 +1,6 @@
 import random
 import copy
-import config.config as config
+import config.classic_ils_config as config
 
 from solvers.base_solver import BaseSolver
 from models.instance.instance_data import InstanceData
