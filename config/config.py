@@ -1,6 +1,5 @@
-MAX_ITERATIONS = 500
+MAX_ITERATIONS = 200
+LOCAL_SEARCH_ITERATIONS = 15
+PERTURBATION_STRENGTH = 5
 MAX_SHIFT = 10
-
-# Hill Climbing me Random Restarts parameters
-NUM_RESTARTS = 1           # Numri i random restarts (10 për diversitet të mirë)
-INSERTION_INTERVAL = 50     # Insertion çdo N iteracione (zvogëluar nga 100 për më shumë insertion)
+INSERTION_INTERVAL = 50

@@ -1,398 +1,208 @@
-"""
-INSERT Operator - Insertion i programit unselected ku ka hapësirë.
-
-Ky operator:
-1. Merr një program UNSELECTED
-2. E inserton ku ka HAPËSIRË (gap) në schedule
-3. Aktivizohet çdo N iteracione (parametër, p.sh. 100)
-4. Ekzekutohet PARA random restart
-
-Përdorim HashMap për O(1) lookups.
-"""
-
 import random
 from copy import deepcopy
-from typing import Dict, List, Tuple, Optional
+from typing import Dict, List, Optional, Tuple
 
 from models.instance.instance_data import InstanceData
-from models.solution.solution import Solution
 from models.solution.scheduled_program import ScheduledProgram
-
-
-def insert(solution: Solution, instance: InstanceData) -> Solution:
-    """
-    INSERT Operator: Merr program unselected dhe e inserton ku ka hapësirë.
-    VERSION I SIGURT - Kontrollon të gjitha constraints.
-    
-    Args:
-        solution: Zgjidhja aktuale
-        instance: Instance data
-    
-    Returns:
-        Solution e re me programin e insertuar (ose origjinale nëse s'ka mundësi)
-    """
-    copy = deepcopy(solution)
-    
-    # Kontrollo nëse ka programe unselected
-    if not copy.unselected_ids:
-        return copy
-    
-    # Sorto programet sipas kohës
-    scheduled = _sorted_schedule(copy.selected.scheduled_programs)
-    
-    # Gjej GAPS (hapësirat) në schedule
-    gaps = _find_gaps(scheduled, instance)
-    
-    if not gaps:
-        return copy
-    
-    # Ndërto HashMap për O(1) lookup
-    program_lookup = _build_program_lookup(instance)
-    
-    # Provo të insertosh çdo program unselected
-    for program_id in copy.unselected_ids[:]:
-        # VERIFIKIM EXTRA: Sigurohu që ky program NUK është tashmë në schedule
-        if any(sp.program_id == program_id for sp in copy.selected.scheduled_programs):
-            # Program tashmë ekziston në schedule - hiqe nga unselected
-            if program_id in copy.unselected_ids:
-                copy.unselected_ids.remove(program_id)
-            continue
-        
-        program_info = _find_program_in_instance(program_id, instance)
-        if program_info is None:
-            continue
-        
-        program, channel_id = program_info
-        duration = program.end - program.start
-        
-        # Provo çdo gap
-        for gap_start, gap_end in gaps:
-            gap_duration = gap_end - gap_start
-            
-            # Kontrollo nëse programi FITET në gap
-            if duration <= gap_duration:
-                # Kontrollo time bounds
-                if not _respects_time_bounds(gap_start, gap_start + duration, instance):
-                    continue
-                
-                # Kontrollo min duration
-                if not _respects_min_duration(gap_start, gap_start + duration, instance):
-                    continue
-                
-                # Kontrollo priority blocks
-                if not _respects_priority_blocks(gap_start, gap_start + duration, channel_id, instance):
-                    continue
-                
-                # KRITIKE: Kontrollo që kohët ORIGJINALE të programit janë brenda gap
-                # Programi duhet të vendoset me kohët e tij origjinale, jo me gap times!
-                if not (program.start >= gap_start and program.end <= gap_end):
-                    # Kohët origjinale të programit NUK janë brenda gap
-                    continue
-                
-                # Krijo programin me kohët e tij ORIGJINALE
-                new_sp = ScheduledProgram(
-                    program_id=program.program_id,
-                    channel_id=channel_id,
-                    start=program.start,  # KOHË ORIGJINALE
-                    end=program.end       # KOHË ORIGJINALE
-                )
-                
-                # Shto përkohësisht në schedule për të testuar
-                test_schedule = copy.selected.scheduled_programs + [new_sp]
-                test_schedule = _sorted_schedule(test_schedule)
-                
-                # Kontrollo no overlap
-                if not _respects_no_overlap(test_schedule):
-                    continue
-                
-                # Kontrollo genre limit
-                if _respects_genre_limit(test_schedule, instance):
-                    # Shto në schedule
-                    copy.selected.scheduled_programs = test_schedule
-                    
-                    # Hiq nga unselected
-                    if program_id in copy.unselected_ids:
-                        copy.unselected_ids.remove(program_id)
-                    
-                    # Invalido fitness
-                    copy._fitness = None
-                    
-                    return copy
-    
-    return copy
+from models.solution.solution import Solution
 
 
 def insert_best(solution: Solution, instance: InstanceData) -> Solution:
-    """
-    INSERT BEST: Inserton programin unselected me SCORE më të lartë.
-    """
-    copy = deepcopy(solution)
-    
-    if not copy.unselected_ids:
-        print(f"    INSERT DEBUG: Nuk ka programe unselected ({len(copy.unselected_ids)})")
-        return copy
-    
-    scheduled = _sorted_schedule(copy.selected.scheduled_programs)
-    gaps = _find_gaps(scheduled, instance)
-    
+    state = deepcopy(solution)
+    if not state.unselected_ids:
+        return state
+
+    gaps = _find_gaps_per_channel(state.selected.scheduled_programs, instance)
     if not gaps:
-        print(f"    INSERT DEBUG: Nuk ka gaps ({len(gaps)})")
-        return copy
-    
-    print(f"    INSERT DEBUG: {len(copy.unselected_ids)} unselected, {len(gaps)} gaps")
-    
-    # Gjej programin me score më të lartë që fitet
-    best_candidate = None
-    best_score = -1
-    best_gap = None
-    
-    checked_programs = 0
-    fits_in_gap = 0
-    passes_constraints = 0
-    
-    for program_id in copy.unselected_ids:
-        # VERIFIKIM EXTRA: Sigurohu që ky program NUK është tashmë në schedule
-        if any(sp.program_id == program_id for sp in copy.selected.scheduled_programs):
+        return state
+
+    best_overall_solution = None
+    best_fitness = state.fitness
+
+    for program_id in list(state.unselected_ids):
+        # Gjejmë kanalin origjinal ku ky program lejohet
+        prog_info = _find_program(instance, program_id)
+        if not prog_info:
             continue
-        
-        program_info = _find_program_in_instance(program_id, instance)
-        if program_info is None:
+
+        _, allowed_channel_id = prog_info
+
+        relevant_gaps = [g for g in gaps if g[2] == allowed_channel_id]
+        if not relevant_gaps:
             continue
-        
-        program, channel_id = program_info
-        duration = program.end - program.start
-        checked_programs += 1
-        
-        for gap_start, gap_end in gaps:
-            if duration <= (gap_end - gap_start):
-                # KRITIKE: Kontrollo që kohët ORIGJINALE të programit janë brenda gap
-                if not (program.start >= gap_start and program.end <= gap_end):
-                    continue
-                
-                fits_in_gap += 1
-                
-                # Kontrollo time bounds
-                if not _respects_time_bounds(program.start, program.end, instance):
-                    continue
-                
-                # Kontrollo min duration
-                if not _respects_min_duration(program.start, program.end, instance):
-                    continue
-                
-                # Kontrollo priority blocks
-                if not _respects_priority_blocks(program.start, program.end, channel_id, instance):
-                    continue
-                
-                # Test kandidatin me kohët ORIGJINALE
-                test_sp = ScheduledProgram(
-                    program_id=program.program_id,
-                    channel_id=channel_id,
-                    start=program.start,  # KOHË ORIGJINALE
-                    end=program.end       # KOHË ORIGJINALE
-                )
-                test_schedule = copy.selected.scheduled_programs + [test_sp]
-                test_schedule = _sorted_schedule(test_schedule)
-                
-                # Kontrollo no overlap
-                if not _respects_no_overlap(test_schedule):
-                    continue
-                
-                # Kontrollo genre limit dhe update best
-                if _respects_genre_limit(test_schedule, instance) and program.score > best_score:
-                    passes_constraints += 1
-                    best_score = program.score
-                    best_candidate = (program, channel_id)
-                    best_gap = (program.start, program.end)  # Use original times
-    
-    print(f"    INSERT DEBUG: Checked {checked_programs} programs, {fits_in_gap} fit in gaps, {passes_constraints} pass constraints")
-    
-    if best_candidate and best_gap:
-        program, channel_id = best_candidate
-        # Përdor kohët ORIGJINALE të programit
-        new_sp = ScheduledProgram(
-            program_id=program.program_id,
-            channel_id=channel_id,
-            start=program.start,  # KOHË ORIGJINALE
-            end=program.end       # KOHË ORIGJINALE
+
+        candidate = _best_program_insertion(state, instance, program_id, relevant_gaps)
+
+        if candidate and candidate.fitness > best_fitness:
+            best_overall_solution = candidate
+            best_fitness = candidate.fitness
+
+    return best_overall_solution if best_overall_solution else state
+
+
+def _best_program_insertion(
+        base: Solution,
+        instance: InstanceData,
+        program_id: str,
+        gaps: List[Tuple[int, int, int]],
+) -> Optional[Solution]:
+    prog_info = _find_program(instance, program_id)
+    program, channel_id = prog_info
+
+    best_local_solution = None
+    best_local_fitness = float("-inf")
+
+    for g_start, g_end, g_channel_id in gaps:
+        # Mos lejo insertion në kanal tjetër nga ai origjinali
+        if g_channel_id != channel_id:
+            continue
+
+        windows = _candidate_windows(
+            program.start, program.end, g_start, g_end,
+            instance.min_duration, instance.opening_time, instance.closing_time
         )
-        
-        # Kontrollo një herë të fundit me të gjitha constraints
-        test_schedule = copy.selected.scheduled_programs + [new_sp]
-        test_schedule = _sorted_schedule(test_schedule)
-        
-        if (_respects_no_overlap(test_schedule) and 
-            _respects_genre_limit(test_schedule, instance)):
-            copy.selected.scheduled_programs = test_schedule
-            
-            if program.program_id in copy.unselected_ids:
-                copy.unselected_ids.remove(program.program_id)
-            
-            copy._fitness = None
-            print(f"    INSERT SUCCESS: Program {program.program_id} (score={program.score}) inserted!")
-        else:
-            print(f"    INSERT FAIL: Final validation failed for {program.program_id}")
-    else:
-        print(f"    INSERT FAIL: No suitable candidates found")
-    
-    return copy
+
+        for start, end in windows:
+            if not _is_feasible(base, instance, program_id, g_channel_id, start, end):
+                continue
+
+            candidate = deepcopy(base)
+            sp = ScheduledProgram(
+                program_id=program_id,
+                channel_id=g_channel_id,
+                start=start,
+                end=end
+            )
+
+            candidate.selected.scheduled_programs.append(sp)
+            candidate.selected.scheduled_programs = _sorted_schedule(candidate.selected.scheduled_programs)
+
+            if program_id in candidate.unselected_ids:
+                candidate.unselected_ids.remove(program_id)
+
+            candidate._fitness = None
+
+            try:
+                # Kontrollojmë nëse fitness llogaritet pa gabime (KeyError)
+                curr_fitness = candidate.fitness
+                if curr_fitness > best_local_fitness:
+                    best_local_solution = candidate
+                    best_local_fitness = curr_fitness
+            except KeyError:
+                continue
+
+    return best_local_solution
 
 
-def _find_gaps(scheduled: List[ScheduledProgram], instance: InstanceData) -> List[Tuple[int, int]]:
-    """
-    Gjej GAPS (hapësirat) GLOBALE në schedule ku mund të insertohet një program.
-    
-    Gap ekziston vetëm nëse asnjë program NUK mbulon atë kohë.
-    
-    Returns:
-        Lista e tuple-ave (gap_start, gap_end)
-    """
-    if not scheduled:
-        # Nëse schedule është bosh, e gjithë periudha është gap
-        return [(instance.opening_time, instance.closing_time)]
-    
-    # Krijo një listë të të gjitha kohërave të zëna
-    # Për çdo kohë, shëno nëse ka programe që po ekzekutohen
-    time_points = []
-    for sp in scheduled:
-        time_points.append((sp.start, 'start'))
-        time_points.append((sp.end, 'end'))
-    
-    # Sorto sipas kohës
-    time_points.sort(key=lambda x: x[0])
-    
-    # Gjej gaps duke numëruar programe aktive
-    gaps = []
-    active_programs = 0
-    last_time = instance.opening_time
-    
-    # Kontrollo gap në fillim
-    if time_points and time_points[0][0] > instance.opening_time:
-        gaps.append((instance.opening_time, time_points[0][0]))
-        last_time = time_points[0][0]
-    
-    for time, event_type in time_points:
-        if event_type == 'start':
-            # Nëse nuk ka programe aktive, dhe ka kaluar kohë, ky është një gap
-            if active_programs == 0 and time > last_time:
-                gaps.append((last_time, time))
-            active_programs += 1
-        else:  # 'end'
-            active_programs -= 1
-            if active_programs == 0:
-                last_time = time
-    
-    # Kontrollo gap në fund
-    if active_programs == 0 and last_time < instance.closing_time:
-        gaps.append((last_time, instance.closing_time))
-    
-    return gaps
-
-
-def _find_program_in_instance(program_id: str, instance: InstanceData) -> Optional[Tuple[object, int]]:
-    """Gjej program në instance sipas ID."""
+def _find_gaps_per_channel(schedule: List[ScheduledProgram], instance: InstanceData) -> List[Tuple[int, int, int]]:
+    all_gaps = []
     for channel in instance.channels:
-        for program in channel.programs:
-            if program.program_id == program_id:
-                return (program, channel.channel_id)
+        ch_id = channel.channel_id
+        ch_programs = sorted(
+            [sp for sp in schedule if sp.channel_id == ch_id],
+            key=lambda x: x.start
+        )
+        cursor = instance.opening_time
+        for sp in ch_programs:
+            if sp.start > cursor:
+                all_gaps.append((cursor, sp.start, ch_id))
+            cursor = max(cursor, sp.end)
+        if cursor < instance.closing_time:
+            all_gaps.append((cursor, instance.closing_time, ch_id))
+    return all_gaps
+
+
+def _is_feasible(solution, instance, pid, channel_id, start, end) -> bool:
+    if start >= end or (end - start) < instance.min_duration:
+        return False
+    if not (instance.opening_time <= start and end <= instance.closing_time):
+        return False
+    if not _respects_priority(start, end, channel_id, instance):
+        return False
+    # 2. Overlap Check (Strikt brenda kanalit)
+    new_sp = ScheduledProgram(pid, channel_id, start, end)
+
+    # Marrim programet ekzistuese të atij kanali + programin e ri
+    current_channel_progs = [p for p in solution.selected.scheduled_programs if p.channel_id == channel_id]
+    current_channel_progs.append(new_sp)
+
+    # I sortojmë sipas kohës së fillimit
+    ch_progs = sorted(current_channel_progs, key=lambda x: x.start)
+
+    for i in range(len(ch_progs) - 1):
+        # Nëse fundi i programit aktual është më i madh se fillimi i tjetrit -> ERROR
+        if ch_progs[i].end > ch_progs[i + 1].start:
+            return False
+
+
+def _genre_limit(schedule, instance):
+    lookup = {(c.channel_id, p.program_id): p for c in instance.channels for p in c.programs}
+    sorted_sch = _sorted_schedule(schedule)
+    last_g, count = None, 0
+    for sp in sorted_sch:
+        prog = lookup.get((sp.channel_id, sp.program_id))
+        if not prog: continue
+        if prog.genre == last_g:
+            count += 1
+        else:
+            last_g, count = prog.genre, 1
+        if count > instance.max_consecutive_genre: return False
+    return True
+
+
+def _sorted_schedule(schedule):
+    return sorted(schedule, key=lambda x: (x.start, x.end, x.channel_id, x.program_id))
+
+
+def _find_program(instance, pid):
+    for c in instance.channels:
+        for p in c.programs:
+            if p.program_id == pid:
+                return p, c.channel_id
     return None
 
 
-def _build_program_lookup(instance: InstanceData) -> Dict[Tuple[int, str], object]:
-    """Ndërto HashMap për O(1) lookup."""
-    lookup = {}
-    for channel in instance.channels:
-        for program in channel.programs:
-            lookup[(channel.channel_id, program.program_id)] = program
-    return lookup
-
-
-def _respects_priority_blocks(start: int, end: int, channel_id: int, instance: InstanceData) -> bool:
-    """Kontrollo nëse respekton priority block constraints."""
-    for block in instance.priority_blocks:
-        overlaps = min(end, block.end) > max(start, block.start)
-        if overlaps and channel_id not in block.allowed_channels:
-            return False
+def _respects_priority(start, end, channel_id, instance):
+    for b in instance.priority_blocks:
+        if min(end, b.end) > max(start, b.start):
+            if channel_id not in b.allowed_channels: return False
     return True
 
 
-def _respects_no_overlap(schedule: List[ScheduledProgram]) -> bool:
-    """
-    Kontrollo që programet të mos kenë overlap BRENDA TË NJËJTIT KANAL.
-    Programet në kanale të ndryshme MUND të overlap në kohë.
-    Schedule duhet të jetë i sortuar sipas kohës.
-    """
-    if not schedule:
-        return True
-    
-    # Grupo programet sipas kanalit
-    channels_programs = {}
-    for sp in schedule:
-        # Kontrollo që start < end
-        if sp.start >= sp.end:
-            return False
-        
-        if sp.channel_id not in channels_programs:
-            channels_programs[sp.channel_id] = []
-        channels_programs[sp.channel_id].append(sp)
-    
-    # Kontrollo overlap PER KANAL
-    for channel_id, programs in channels_programs.items():
-        # Sorto programet e këtij kanali sipas kohës
-        sorted_programs = sorted(programs, key=lambda p: (p.start, p.end))
-        
-        # Kontrollo overlap midis programeve në të njëjtin kanal
-        for i in range(len(sorted_programs) - 1):
-            if sorted_programs[i].end > sorted_programs[i + 1].start:
-                # Overlap në të njëjtin kanal - GABIM!
-                return False
-    
-    return True
-    
-    return True
+def _candidate_windows(p_start, p_end, g_start, g_end, min_d, open_t, close_t):
+    # l (left) është pika më e hershme ku mund të fillojë:
+    # brenda gap-it dhe orarit të hapjes (pa kufizim nga p_start)
+    l = max(g_start, open_t)
+
+    # r (right) është pika më e vonshme ku mund të mbarojë:
+    # brenda gap-it dhe orarit të mbylljes (pa kufizim nga p_end)
+    r = min(g_end, close_t)
+
+    # Nëse pas shkurtimit, kohëzgjatja është më e vogël se min_duration,
+    # ky program nuk mund të futet në këtë gap.
+    if r - l < min_d:
+        return []
+
+    # Kthejmë dritaret e mundshme të shkurtuara saktë
+    return [
+        (l, r),  # Kohëzgjatja maksimale brenda gap-it
+        (l, l + min_d),  # Vetëm kohëzgjatja minimale nga fillimi
+        (r - min_d, r)  # Vetëm kohëzgjatja minimale në fund
+    ]
 
 
-def _respects_time_bounds(start: int, end: int, instance: InstanceData) -> bool:
-    """Kontrollo që programi të jetë brenda opening/closing time."""
-    return start >= instance.opening_time and end <= instance.closing_time
+def insertion_stats(solution, instance):
+    # Thërrasim gjetjen e gaps
+    gaps = _find_gaps_per_channel(solution.selected.scheduled_programs, instance)
 
+    # Kthejmë fjalorin me të dhëna
+    return {
+        "gaps": len(gaps),
+        "unselected": len(solution.unselected_ids),
+        "placeable_any": 1 if len(gaps) > 0 and len(solution.unselected_ids) > 0 else 0
+        # Mund ta bësh edhe më kompleks duke kontrolluar feasibility për çdo program,
+        # por kjo mund ta ngadalësojë shumë ILS-in.
+    }
 
-def _respects_min_duration(start: int, end: int, instance: InstanceData) -> bool:
-    """Kontrollo që programi të ketë min duration."""
-    return (end - start) >= instance.min_duration
-
-
-def _respects_genre_limit(schedule: List[ScheduledProgram], instance: InstanceData) -> bool:
-    """
-    Kontrollo nëse schedule respekton max_consecutive_genre constraint.
-    """
-    if not schedule:
-        return True
-    
-    lookup = _build_program_lookup(instance)
-    consecutive = 0
-    last_genre = None
-    
-    for sp in schedule:
-        program = lookup.get((sp.channel_id, sp.program_id))
-        if program is None:
-            continue
-        
-        genre = program.genre
-        if genre == last_genre:
-            consecutive += 1
-        else:
-            last_genre = genre
-            consecutive = 1
-        
-        if consecutive > instance.max_consecutive_genre:
-            return False
-    
-    return True
-
-
-def _sorted_schedule(schedule: List[ScheduledProgram]) -> List[ScheduledProgram]:
-    """Sorto schedule sipas kohës."""
-    return sorted(
-        schedule,
-        key=lambda p: (p.start, p.end, p.channel_id, p.program_id)
-    )
+def insert(solution, instance):
+    return insert_best(solution, instance)
