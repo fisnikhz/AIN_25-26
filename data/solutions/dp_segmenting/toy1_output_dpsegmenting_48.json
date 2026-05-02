@@ -1,0 +1,40 @@
+{
+    "scheduled_programs": [
+        {
+            "program_id": "p2_1",
+            "channel_id": 2,
+            "start": 0,
+            "end": 10
+        },
+        {
+            "program_id": "p1_2",
+            "channel_id": 1,
+            "start": 10,
+            "end": 20
+        },
+        {
+            "program_id": "p0_2",
+            "channel_id": 0,
+            "start": 20,
+            "end": 30
+        },
+        {
+            "program_id": "p1_3",
+            "channel_id": 1,
+            "start": 30,
+            "end": 40
+        },
+        {
+            "program_id": "p1_4",
+            "channel_id": 1,
+            "start": 40,
+            "end": 60
+        },
+        {
+            "program_id": "p3_4",
+            "channel_id": 3,
+            "start": 65,
+            "end": 75
+        }
+    ]
+}

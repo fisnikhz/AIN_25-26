@@ -5,6 +5,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Iterable, Optional, Sequence
 
+from io_utils.initial_solution_parser import SolutionParser
 from io_utils.instance_parser import InstanceParser
 from models.solution.scheduled_program import ScheduledProgram
 
@@ -264,6 +265,28 @@ class InstanceContext:
 
 def load_instance(instance_path: str | Path):
     return InstanceParser(str(instance_path)).parse()
+
+
+def load_candidate_solution(instance, solution_path: str | Path, source: str) -> CandidateSolution:
+    context = InstanceContext(instance)
+    raw_schedule = SolutionParser(solution_path).parse()
+
+    segments = [
+        context.enrich_segment(scheduled_program, source)
+        for scheduled_program in raw_schedule.scheduled_programs
+    ]
+
+    candidate = context.solution_from_segments(
+        segments,
+        source=source,
+        metadata={"solution_path": str(solution_path)},
+    )
+
+    is_valid, reason = context.validate_schedule(candidate.scheduled_programs)
+    if not is_valid:
+        raise ValueError(f"Seed solution from {solution_path} is invalid: {reason}")
+
+    return candidate
 
 
 def save_solution(solution: CandidateSolution, output_path: str | Path) -> Path:

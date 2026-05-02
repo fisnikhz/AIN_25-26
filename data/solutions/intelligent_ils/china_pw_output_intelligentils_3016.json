@@ -73,8 +73,8 @@
             "end": 570
         },
         {
-            "program_id": "490332_studio_2026-01-04_0480",
-            "channel_id": 966,
+            "program_id": "457704_2_2026-01-04_0570",
+            "channel_id": 310,
             "start": 570,
             "end": 600
         },
@@ -97,8 +97,8 @@
             "end": 650
         },
         {
-            "program_id": "419943__2026-01-04_0654",
-            "channel_id": 129,
+            "program_id": "490332_studio_2026-01-04_0480",
+            "channel_id": 966,
             "start": 654,
             "end": 684
         },
@@ -145,40 +145,52 @@
             "end": 900
         },
         {
-            "program_id": "378880__2026-01-04_0900",
-            "channel_id": 62,
+            "program_id": "490331_newsandweather_2026-01-04_0900",
+            "channel_id": 965,
             "start": 900,
-            "end": 930
+            "end": 910
         },
         {
-            "program_id": "378880__2026-01-04_0930",
-            "channel_id": 62,
-            "start": 930,
-            "end": 960
-        },
-        {
-            "program_id": "490331_hellofromstudiopark_2026-01-04_0960",
+            "program_id": "490331_cooljapan_2026-01-04_0910",
             "channel_id": 965,
-            "start": 960,
-            "end": 1005
+            "start": 910,
+            "end": 954
         },
         {
-            "program_id": "490331_nhknews_2026-01-04_1010",
+            "program_id": "490331_worldweather_2026-01-04_0954",
             "channel_id": 965,
-            "start": 1010,
-            "end": 1021
+            "start": 954,
+            "end": 955
         },
         {
-            "program_id": "464602_2025_top_11_2026-01-04_0983",
-            "channel_id": 791,
-            "start": 1049,
-            "end": 1079
+            "program_id": "417055_2026_1_4_2026-01-04_0955",
+            "channel_id": 103,
+            "start": 955,
+            "end": 988
         },
         {
-            "program_id": "464602_2025_130_11_2026-01-04_1079",
-            "channel_id": 791,
-            "start": 1079,
-            "end": 1109
+            "program_id": "457969_show_2026-01-04_0970",
+            "channel_id": 563,
+            "start": 990,
+            "end": 1020
+        },
+        {
+            "program_id": "490552__2026-01-04_1020",
+            "channel_id": 1185,
+            "start": 1020,
+            "end": 1050
+        },
+        {
+            "program_id": "490552__2026-01-04_1050",
+            "channel_id": 1185,
+            "start": 1050,
+            "end": 1080
+        },
+        {
+            "program_id": "490324_0468_2026-01-04_1080",
+            "channel_id": 958,
+            "start": 1080,
+            "end": 1110
         },
         {
             "program_id": "378838__2026-01-04_1110",

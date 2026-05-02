@@ -8,6 +8,11 @@ from models.program import Program
 from scheduling_intelligent_ils.common import CandidateSegment as Schedule
 from scheduling_intelligent_ils.common import CandidateSolution as Solution
 from scheduling_intelligent_ils.common import InstanceContext
+from scheduling_intelligent_ils.smart_tv_scheduler_scoreboost import (
+    build_segments,
+    instance_to_data,
+    keep_top_k_per_program,
+)
 
 
 class BeamSearchScheduler:
@@ -30,6 +35,7 @@ class BeamSearchScheduler:
     def _preprocess(self):
         """Build all necessary indices."""
         self.n_channels = len(self.instance_data.channels)
+        self.total_programs = sum(len(channel.programs) for channel in self.instance_data.channels)
         
         # Programs sorted by start time per channel
         self.ch_progs: List[List[Program]] = []
@@ -515,21 +521,176 @@ class BeamSearchScheduler:
             total_score=best_score,
             source="beam_search+local_search",
         )
+
+    def _fast_segment_beam_core(self) -> Solution:
+        """
+        Beam Search i lehte per instanca shume te medha.
+        Perdoret kur beam-i standard do te kontrollonte shume kanale ne cdo hap.
+        """
+
+        data = instance_to_data(self.instance_data)
+        segments = build_segments(data)
+        if not segments:
+            return Solution([], 0, source="beam_search_fast")
+
+        top_k = 1 if self.total_programs > 50000 else 2
+        segments = keep_top_k_per_program(segments, top_k=top_k)
+        segments.sort(
+            key=lambda item: (
+                item["seg_start"],
+                item["seg_end"],
+                item["channel_id"],
+                item["unique_program_id"],
+            )
+        )
+        starts = [item["seg_start"] for item in segments]
+        values = [
+            item["score"] + item["bonus"] - item["cut_penalty"]
+            for item in segments
+        ]
+
+        opening = self.instance_data.opening_time
+        closing = self.instance_data.closing_time
+        min_duration = max(1, self.instance_data.min_duration)
+        max_depth = max(1, (closing - opening) // min_duration + 1)
+
+        scan_limit = 350 if self.total_programs > 50000 else 500
+        take_per_state = 10 if self.total_programs > 50000 else 16
+        beam_width = min(self.beam_width, 18 if self.total_programs > 50000 else 28)
+
+        initial = (0, opening, None, "", 0, tuple(), frozenset())
+        beam = [initial]
+        best_score = 0
+        best_schedule = tuple()
+
+        for _ in range(max_depth):
+            next_beam = []
+
+            for state in beam:
+                score, time, prev_channel, prev_genre, streak, schedule, used = state
+
+                if score > best_score:
+                    best_score = score
+                    best_schedule = schedule
+
+                start_index = bisect.bisect_left(starts, time)
+                end_index = min(len(segments), start_index + scan_limit)
+                candidate_indices = range(start_index, end_index)
+
+                ranked = []
+                for idx in candidate_indices:
+                    item = segments[idx]
+                    unique_id = item["unique_program_id"]
+
+                    if unique_id in used:
+                        continue
+
+                    if item["seg_start"] < time:
+                        continue
+
+                    if item["genre"] == prev_genre:
+                        new_streak = streak + 1
+                    else:
+                        new_streak = 1
+
+                    if new_streak > self.instance_data.max_consecutive_genre:
+                        continue
+
+                    added = values[idx]
+                    if prev_channel is not None and prev_channel != item["channel_id"]:
+                        added -= self.instance_data.switch_penalty
+
+                    heuristic = added + (closing - item["seg_end"]) * self.avg_score_per_min
+                    ranked.append((heuristic, added, idx, new_streak))
+
+                ranked.sort(reverse=True)
+
+                for _, added, idx, new_streak in ranked[:take_per_state]:
+                    item = segments[idx]
+                    next_beam.append(
+                        (
+                            score + added,
+                            item["seg_end"],
+                            item["channel_id"],
+                            item["genre"],
+                            new_streak,
+                            schedule + (idx,),
+                            used | {item["unique_program_id"]},
+                        )
+                    )
+
+            if not next_beam:
+                break
+
+            next_beam.sort(
+                key=lambda state: state[0] + (closing - state[1]) * self.avg_score_per_min,
+                reverse=True,
+            )
+
+            unique_beam = []
+            seen = set()
+            for state in next_beam:
+                key = (state[1], state[2], state[3], state[4])
+                if key in seen:
+                    continue
+                seen.add(key)
+                unique_beam.append(state)
+                if len(unique_beam) >= beam_width:
+                    break
+
+            beam = unique_beam
+
+        scheduled = []
+        for idx in best_schedule:
+            item = segments[idx]
+            channel_id, program = self.context.unique_program_lookup[item["unique_program_id"]]
+            scheduled.append(
+                self.context.create_segment(
+                    channel_id=channel_id,
+                    program=program,
+                    start=item["seg_start"],
+                    end=item["seg_end"],
+                    source="beam_search_fast",
+                )
+            )
+
+        return Solution(
+            scheduled_programs=scheduled,
+            total_score=self.context.evaluate_segments(scheduled),
+            source="beam_search_fast",
+        )
     
     def generate_solution(self) -> Solution:
         """Generate the maximum score solution."""
         # Adaptive parameters for large instances
         if self.n_channels > 50:
-            # Optimized: Set to 500 for good balance of speed and score
-            if self.beam_width < 500:
+            if self.total_programs > 50000:
+                target_width = 25
+            elif self.total_programs > 25000:
+                target_width = 40
+            else:
+                target_width = 250
+
+            if self.beam_width < target_width:
                 if self.verbose:
-                    print(f"Large instance detected ({self.n_channels} channels). Setting beam width to 500 for speed/quality balance.")
-                self.beam_width = 500
+                    print(
+                        f"Large instance detected ({self.n_channels} channels, "
+                        f"{self.total_programs} programs). Setting beam width to {target_width}."
+                    )
+                self.beam_width = target_width
         if self.verbose:
             print(f"\n{'='*70}")
             print("MAX SCORE SCHEDULER")
             print(f"Channels: {self.n_channels}, Beam: {self.beam_width}")
             print(f"{'='*70}\n")
+
+        if self.total_programs > 25000:
+            if self.verbose:
+                print("Running Fast Segment Beam Search for a very large instance...")
+            sol = self._fast_segment_beam_core()
+            if self.verbose:
+                print(f"  Score: {sol.total_score}")
+            return sol
         
         # Strategy: Beam search (deterministic)
         if self.verbose:

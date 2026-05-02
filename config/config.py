@@ -1,0 +1,3 @@
+# Intelligent ILS settings
+INTELLIGENT_TIME_LIMIT_SECONDS = None
+SWITCH_TEMP = 10.0

@@ -61,8 +61,8 @@
             "end": 780
         },
         {
-            "program_id": "ZDF_prime_movie",
-            "channel_id": 1,
+            "program_id": "P7_evening_show",
+            "channel_id": 3,
             "start": 780,
             "end": 810
         },
@@ -79,8 +79,8 @@
             "end": 870
         },
         {
-            "program_id": "P7_evening_show",
-            "channel_id": 3,
+            "program_id": "ZDF_prime_movie",
+            "channel_id": 1,
             "start": 870,
             "end": 900
         },
@@ -91,8 +91,8 @@
             "end": 930
         },
         {
-            "program_id": "ARD_prime_time",
-            "channel_id": 0,
+            "program_id": "ZDF_ent",
+            "channel_id": 1,
             "start": 930,
             "end": 960
         },
@@ -103,14 +103,14 @@
             "end": 990
         },
         {
-            "program_id": "ZDF_ent",
-            "channel_id": 1,
+            "program_id": "ARD_late_news",
+            "channel_id": 0,
             "start": 990,
             "end": 1020
         },
         {
-            "program_id": "RTL_trailer",
-            "channel_id": 2,
+            "program_id": "WDR_late_doc",
+            "channel_id": 4,
             "start": 1020,
             "end": 1050
         },
@@ -127,14 +127,14 @@
             "end": 1110
         },
         {
-            "program_id": "ZDF_late_movie",
-            "channel_id": 1,
+            "program_id": "ARD_movie",
+            "channel_id": 0,
             "start": 1110,
             "end": 1140
         },
         {
-            "program_id": "WDR_late_doc",
-            "channel_id": 4,
+            "program_id": "ZDF_late_movie",
+            "channel_id": 1,
             "start": 1140,
             "end": 1170
         },
@@ -151,27 +151,21 @@
             "end": 1230
         },
         {
-            "program_id": "ARD_movie",
-            "channel_id": 0,
-            "start": 1230,
-            "end": 1260
+            "program_id": "ZDF_night_doc",
+            "channel_id": 1,
+            "start": 1240,
+            "end": 1270
         },
         {
             "program_id": "ARD_late_show",
             "channel_id": 0,
-            "start": 1260,
+            "start": 1270,
             "end": 1320
         },
         {
             "program_id": "ARD_night_music",
             "channel_id": 0,
             "start": 1320,
-            "end": 1350
-        },
-        {
-            "program_id": "ZDF_night_doc",
-            "channel_id": 1,
-            "start": 1350,
             "end": 1380
         }
     ]
