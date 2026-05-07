@@ -1,5 +1,6 @@
 from collections import defaultdict
 from copy import deepcopy
+from bisect import bisect_right
 import heapq
 import random
 import time
@@ -213,8 +214,8 @@ class IntelligentILSSolver(BaseSolver):
 
         if strategy == "small":
             candidate = self._small_reoptimize(instance, solution)
-        elif strategy == "dp":
-            candidate = self._dp_reoptimize(instance, solution)
+        elif strategy == "large":
+            candidate = self._large_reoptimize(instance, solution)
 
         if candidate and self._is_valid(candidate, instance) and candidate.fitness > solution.fitness:
             print(f"[REOPT] {solution.fitness} -> {candidate.fitness} ({time.perf_counter() - start_time:.1f}s)")
@@ -225,8 +226,8 @@ class IntelligentILSSolver(BaseSolver):
         selected = len(solution.selected.scheduled_programs)
         if self.total_programs <= 180 and selected >= 28:
             return "small"
-        if (self.total_programs >= 3500 and 60 <= selected <= 120) or (self.total_programs >= 20000 and 500 <= selected <= 1000):
-            return "dp"
+        if (self.total_programs >= 3500 and 60 <= selected <= 120) or (self.total_programs >= 20000 and selected >= 500):
+            return "large"
         return None
 
     def _small_reoptimize(self, instance: InstanceData, seed: Solution) -> Solution:
@@ -257,30 +258,79 @@ class IntelligentILSSolver(BaseSolver):
                 states = heapq.nlargest(50000, states + new_states, key=lambda state: (state[0], -state[1], len(state[6])))
         return self._solution_from_segments(instance, best[6])
 
-    def _dp_reoptimize(self, instance: InstanceData, seed: Solution) -> Solution:
+    def _large_reoptimize(self, instance: InstanceData, seed: Solution) -> Solution:
         segments = self._candidate_segments(instance, seed)
-        end_events = sorted((segment["end"], index) for index, segment in enumerate(segments))
-        order = sorted(range(len(segments)), key=lambda index: (segments[index]["start"], segments[index]["end"]))
-        active, by_end, nodes = {}, defaultdict(list), []
-        best_score, best_node, end_pos = 0, None, 0
+        selected = len(seed.selected.scheduled_programs)
+        best = seed
 
-        for index in order:
-            segment = segments[index]
-            while end_pos < len(end_events) and end_events[end_pos][0] <= segment["start"]:
-                finished = end_events[end_pos][1]
-                for state, score, node in by_end[finished]:
-                    if state not in active or score > active[state][0]:
-                        active[state] = (score, node)
-                end_pos += 1
+        if selected <= 1000 and self.total_programs < 50000:
+            end_events = sorted((segment["end"], index) for index, segment in enumerate(segments))
+            order = sorted(range(len(segments)), key=lambda index: (segments[index]["start"], segments[index]["end"]))
+            active, by_end, nodes = {}, defaultdict(list), []
+            best_score, best_node, end_pos = 0, None, 0
 
-            base_score, previous_node, streak = self._best_previous(active, segment, instance)
-            score, node = base_score + segment["value"], len(nodes)
-            nodes.append((previous_node, segment))
-            by_end[index].append(((segment["channel_id"], segment["genre"], streak), score, node))
+            for index in order:
+                segment = segments[index]
+                while end_pos < len(end_events) and end_events[end_pos][0] <= segment["start"]:
+                    finished = end_events[end_pos][1]
+                    for state, score, node in by_end[finished]:
+                        if state not in active or score > active[state][0]:
+                            active[state] = (score, node)
+                    end_pos += 1
 
-            if score > best_score:
-                best_score, best_node = score, node
-        return self._solution_from_node(instance, nodes, best_node)
+                base_score, previous_node, streak = self._best_previous(active, segment, instance)
+                score, node = base_score + segment["value"], len(nodes)
+                nodes.append((previous_node, segment))
+                by_end[index].append(((segment["channel_id"], segment["genre"], streak), score, node))
+
+                if score > best_score:
+                    best_score, best_node = score, node
+
+            candidate = self._solution_from_node(instance, nodes, best_node)
+            if candidate and self._is_valid(candidate, instance) and candidate.fitness > best.fitness:
+                best = candidate
+
+        schedule = self._sort(best.selected.scheduled_programs)
+        starts = [program.start for program in schedule]
+        values = [self._local_value(program) for program in schedule]
+        used = {program.program_id for program in schedule}
+        best_fitness, best_solution = best.fitness, best
+
+        for segment in segments:
+            pos = bisect_right(starts, segment["start"])
+            for index in range(max(0, pos - 2), min(len(schedule), pos + 3)):
+                old = schedule[index]
+                if segment["program_id"] in used and segment["program_id"] != old.program_id:
+                    continue
+
+                previous = schedule[index - 1] if index > 0 else None
+                following = schedule[index + 1] if index + 1 < len(schedule) else None
+                if previous and previous.end > segment["start"]:
+                    continue
+                if following and segment["end"] > following.start:
+                    continue
+
+                old_switch = (0 if not previous or previous.channel_id == old.channel_id else instance.switch_penalty)
+                old_switch += 0 if not following or old.channel_id == following.channel_id else instance.switch_penalty
+                new_switch = (0 if not previous or previous.channel_id == segment["channel_id"] else instance.switch_penalty)
+                new_switch += 0 if not following or segment["channel_id"] == following.channel_id else instance.switch_penalty
+                delta = segment["value"] - values[index] + old_switch - new_switch
+
+                if best.fitness + delta <= best_fitness:
+                    continue
+
+                candidate_schedule = self._sort(
+                    schedule[:index]
+                    + [ScheduledProgram(segment["program_id"], segment["channel_id"], segment["start"], segment["end"])]
+                    + schedule[index + 1:]
+                )
+                candidate = Solution(best.evaluator, Schedule(candidate_schedule), best.unselected_ids.copy())
+                if self._is_valid(candidate, instance) and candidate.fitness > best_fitness:
+                    used_ids = {program.program_id for program in candidate.selected.scheduled_programs}
+                    candidate.unselected_ids = [p.program_id for c in instance.channels for p in c.programs if p.program_id not in used_ids]
+                    best_fitness, best_solution = candidate.fitness, candidate
+
+        return best_solution
 
     def _candidate_segments(self, instance: InstanceData, seed: Solution):
         seed_windows = [(p.program_id, p.channel_id, p.start, p.end) for p in seed.selected.scheduled_programs]
