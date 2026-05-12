@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 from models.solution.schedule import Schedule
 from models.solution.scheduled_program import ScheduledProgram
 from evaluators.evaluator import Evaluator
@@ -11,6 +13,15 @@ class Solution:
         self.selected = selected
         self.unselected_ids = unselected_ids if unselected_ids is not None else []
         self._fitness: float = None
+
+    def __deepcopy__(self, memo):
+        new = Solution.__new__(Solution)
+        memo[id(self)] = new
+        new.evaluator = self.evaluator          # shared — evaluator is never mutated
+        new.selected = deepcopy(self.selected, memo)  # deep — scheduled programs change
+        new.unselected_ids = list(self.unselected_ids)  # shallow — strings are immutable
+        new._fitness = None                     # reset so it's recomputed on access
+        return new
 
     @property
     def fitness(self) -> float:
