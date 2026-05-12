@@ -6,10 +6,12 @@ from io_utils.file_selector import select_file
 from io_utils.instance_parser import InstanceParser
 from io_utils.initial_solution_parser import SolutionParser
 from evaluators.base_evaluator import BaseEvaluator
+from models import instance
 from models.solution.solution import Solution
 from utils.validator import validate_schedule_against_instance
 
 from solvers.classic_ils_solver import IteratedLocalSearchSolver
+from solvers.gls_solver import GuidedLocalSearchSolver
 
 
 def save_solution(schedule, output_path: Path):
@@ -120,16 +122,16 @@ def main():
         print(f"Validation error:\n{e}")
         return
 
-    print("\n=== Running CLASSIC ILS ===")
+    print("\n=== Running GUIDED LOCAL SEARCH ===")
 
-    solver = IteratedLocalSearchSolver(best_solution)
+    solver = GuidedLocalSearchSolver(best_solution)
     best_result = solver.solve(instance)
 
-    print(f"\nFINAL ILS FITNESS: {best_result.fitness}")
+    print(f"\nFINAL GLS FITNESS: {best_result.fitness}")
     print(f"Improvement from {best_solution.fitness}: {best_result.fitness - best_solution.fitness}")
 
-    output_path = Path("data/solutions/ils") / (
-        f"{instance_name}_ils_best_initial_{int(best_result.fitness)}.json"
+    output_path = Path("data/solutions/gls") / (
+        f"{instance_name}_gls_best_initial_{int(best_result.fitness)}.json"
     )
 
     save_solution(best_result.selected, output_path)
