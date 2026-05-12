@@ -1,7 +1,7 @@
 import os
 
 def select_file(input_dir="data/input"):
-    files = [f for f in os.listdir(input_dir) if f.endswith(".json")]
+    files = sorted(f for f in os.listdir(input_dir) if f.endswith(".json"))
 
     if not files:
         raise FileNotFoundError(f"No JSON files found in {input_dir}")

@@ -2,14 +2,13 @@
 import json
 from pathlib import Path
 
-from io_utils.file_selector import select_file
-from io_utils.instance_parser import InstanceParser
-from io_utils.initial_solution_parser import SolutionParser
 from evaluators.base_evaluator import BaseEvaluator
+from io_utils.file_selector import select_file
+from io_utils.initial_solution_parser import SolutionParser
+from io_utils.instance_parser import InstanceParser
 from models.solution.solution import Solution
-from utils.validator import validate_schedule_against_instance
-
 from solvers.classic_ils_solver import IteratedLocalSearchSolver
+from utils.validator import validate_schedule_against_instance
 
 
 def save_solution(schedule, output_path: Path):
@@ -18,23 +17,23 @@ def save_solution(schedule, output_path: Path):
     payload = {
         "scheduled_programs": [
             {
-                "program_id": p.program_id,
-                "channel_id": p.channel_id,
-                "start": p.start,
-                "end": p.end,
+                "program_id": program.program_id,
+                "channel_id": program.channel_id,
+                "start": program.start,
+                "end": program.end,
             }
-            for p in schedule
+            for program in schedule
         ]
     }
 
-    with output_path.open("w", encoding="utf-8") as f:
-        json.dump(payload, f, indent=4)
+    with output_path.open("w", encoding="utf-8") as file:
+        json.dump(payload, file, indent=4)
 
 
 def build_solution(instance, schedule):
     evaluator = BaseEvaluator(instance)
 
-    selected_ids = {p.program_id for p in schedule}
+    selected_ids = {program.program_id for program in schedule}
     unselected_ids = []
 
     for channel in instance.channels:
@@ -45,15 +44,14 @@ def build_solution(instance, schedule):
     return Solution(
         evaluator=evaluator,
         selected=schedule,
-        unselected_ids=unselected_ids
+        unselected_ids=unselected_ids,
     )
 
 
 def get_all_initial_solutions(instance, instance_name: str):
-
     directories = [
         Path("data/solutions/constructiveapproach"),
-        Path("data/solutions/dp_segmenting")
+        Path("data/solutions/dp_segmenting"),
     ]
 
     solutions = []
@@ -65,24 +63,22 @@ def get_all_initial_solutions(instance, instance_name: str):
         for file_path in directory.glob(f"{instance_name}*.json"):
             try:
                 schedule = SolutionParser(file_path).parse()
-                sol = build_solution(instance, schedule)
-                solutions.append({
-                    "schedule": schedule,
-                    "solution": sol,
-                    "path": file_path,
-                    "folder": directory.name
-                })
-            except Exception as e:
-                print(f"Error reading {file_path}: {e}")
+                solution = build_solution(instance, schedule)
+                solutions.append(
+                    {
+                        "schedule": schedule,
+                        "solution": solution,
+                        "path": file_path,
+                        "folder": directory.name,
+                    }
+                )
+            except Exception as error:
+                print(f"Error reading {file_path}: {error}")
 
     return solutions
 
 
-# =====================================================
-# MAIN
-# =====================================================
 def main():
-
     print("=== Select Instance File ===")
     instance_path = select_file("data/input")
     instance = InstanceParser(instance_path).parse()
@@ -98,12 +94,7 @@ def main():
 
     print(f"Found {len(all_candidates)} solutions in total.")
 
-
-    best_entry = max(
-        all_candidates,
-        key=lambda x: x["solution"].fitness
-    )
-
+    best_entry = max(all_candidates, key=lambda entry: entry["solution"].fitness)
     best_schedule = best_entry["schedule"]
     best_solution = best_entry["solution"]
     best_path = best_entry["path"]
@@ -116,8 +107,8 @@ def main():
 
     try:
         validate_schedule_against_instance(best_schedule, instance)
-    except ValueError as e:
-        print(f"Validation error:\n{e}")
+    except ValueError as error:
+        print(f"Validation error:\n{error}")
         return
 
     print("\n=== Running CLASSIC ILS ===")
@@ -131,7 +122,6 @@ def main():
     output_path = Path("data/solutions/ils") / (
         f"{instance_name}_ils_best_initial_{int(best_result.fitness)}.json"
     )
-
     save_solution(best_result.selected, output_path)
 
     print(f"Saved to: {output_path}")
