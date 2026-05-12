@@ -16,33 +16,38 @@ def swap(
     program_a: ScheduledProgram,
     program_b: ScheduledProgram,
 ) -> Solution:
-
-    copy = deepcopy(state)
+    copy_state = deepcopy(state)
 
     idx_a = None
     idx_b = None
-    for i, p in enumerate(copy.selected.scheduled_programs):
-        if p.program_id == program_a.program_id and p.channel_id == program_a.channel_id:
+    for i, scheduled_program in enumerate(copy_state.selected.scheduled_programs):
+        if (
+            scheduled_program.program_id == program_a.program_id
+            and scheduled_program.channel_id == program_a.channel_id
+        ):
             idx_a = i
-        elif p.program_id == program_b.program_id and p.channel_id == program_b.channel_id:
+        elif (
+            scheduled_program.program_id == program_b.program_id
+            and scheduled_program.channel_id == program_b.channel_id
+        ):
             idx_b = i
 
     if idx_a is None or idx_b is None:
         return state
 
-    a = copy.selected.scheduled_programs[idx_a]
-    b = copy.selected.scheduled_programs[idx_b]
+    program_left = copy_state.selected.scheduled_programs[idx_a]
+    program_right = copy_state.selected.scheduled_programs[idx_b]
 
-    a.start, b.start = b.start, a.start
-    a.end, b.end = b.end, a.end
+    program_left.start, program_right.start = program_right.start, program_left.start
+    program_left.end, program_right.end = program_right.end, program_left.end
 
-    copy.selected.scheduled_programs = sort_schedule(copy.selected.scheduled_programs)
+    copy_state.selected.scheduled_programs = sort_schedule(copy_state.selected.scheduled_programs)
 
-    if not is_schedule_feasible(copy.selected.scheduled_programs, instance):
+    if not is_schedule_feasible(copy_state.selected.scheduled_programs, instance):
         return state
 
-    copy._fitness = None
-    return copy
+    copy_state._fitness = None
+    return copy_state
 
 
 def swap_heuristic(instance: InstanceData, state: Solution) -> Solution:
@@ -69,10 +74,34 @@ def swap_heuristic(instance: InstanceData, state: Solution) -> Solution:
         left_program = ordered[left_index]
         right_program = ordered[right_index]
         time_pref_gain = (
-            _scheduled_time_pref_bonus(right_program, left_program.start, left_program.end, instance, lookup)
-            + _scheduled_time_pref_bonus(left_program, right_program.start, right_program.end, instance, lookup)
-            - _scheduled_time_pref_bonus(left_program, left_program.start, left_program.end, instance, lookup)
-            - _scheduled_time_pref_bonus(right_program, right_program.start, right_program.end, instance, lookup)
+            _scheduled_time_pref_bonus(
+                right_program,
+                left_program.start,
+                left_program.end,
+                instance,
+                lookup,
+            )
+            + _scheduled_time_pref_bonus(
+                left_program,
+                right_program.start,
+                right_program.end,
+                instance,
+                lookup,
+            )
+            - _scheduled_time_pref_bonus(
+                left_program,
+                left_program.start,
+                left_program.end,
+                instance,
+                lookup,
+            )
+            - _scheduled_time_pref_bonus(
+                right_program,
+                right_program.start,
+                right_program.end,
+                instance,
+                lookup,
+            )
         )
 
         ranked_candidates.append((switch_gain, time_pref_gain, left_program, right_program))
@@ -98,7 +127,8 @@ def swap_two(
 
 def _find_switch_points(schedule: list[ScheduledProgram]) -> list[int]:
     return [
-        i for i in range(len(schedule) - 1)
+        i
+        for i in range(len(schedule) - 1)
         if schedule[i].channel_id != schedule[i + 1].channel_id
     ]
 
@@ -125,13 +155,13 @@ def _scheduled_time_pref_bonus(
     instance: InstanceData,
     lookup: dict[tuple[int, str], object],
 ) -> float:
-    inst_program = lookup.get((scheduled_program.channel_id, scheduled_program.program_id))
-    if inst_program is None:
+    instance_program = lookup.get((scheduled_program.channel_id, scheduled_program.program_id))
+    if instance_program is None:
         return 0.0
 
     bonus = 0.0
     for preference in instance.time_preferences:
-        if inst_program.genre != preference.preferred_genre:
+        if instance_program.genre != preference.preferred_genre:
             continue
         overlap = min(end, preference.end) - max(start, preference.start)
         if overlap >= instance.min_duration:

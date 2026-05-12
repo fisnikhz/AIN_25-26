@@ -2,13 +2,13 @@
 import json
 from pathlib import Path
 
-from io_utils.file_selector import select_file
-from io_utils.instance_parser import InstanceParser
-from io_utils.initial_solution_parser import SolutionParser
 from evaluators.base_evaluator import BaseEvaluator
+from io_utils.file_selector import select_file
+from io_utils.initial_solution_parser import SolutionParser
+from io_utils.instance_parser import InstanceParser
 from models.solution.solution import Solution
+from solvers.classic_ils_solver import IteratedLocalSearchSolver
 from utils.validator import validate_schedule_against_instance
-from solvers.hill_climbing_solver import HillClimbingSolver
 
 
 def save_solution(schedule, output_path: Path):
@@ -30,49 +30,101 @@ def save_solution(schedule, output_path: Path):
         json.dump(payload, file, indent=4)
 
 
+def build_solution(instance, schedule):
+    evaluator = BaseEvaluator(instance)
+
+    selected_ids = {program.program_id for program in schedule}
+    unselected_ids = []
+
+    for channel in instance.channels:
+        for program in channel.programs:
+            if program.program_id not in selected_ids:
+                unselected_ids.append(program.program_id)
+
+    return Solution(
+        evaluator=evaluator,
+        selected=schedule,
+        unselected_ids=unselected_ids,
+    )
+
+
+def get_all_initial_solutions(instance, instance_name: str):
+    directories = [
+        Path("data/solutions/constructiveapproach"),
+        Path("data/solutions/dp_segmenting"),
+    ]
+
+    solutions = []
+
+    for directory in directories:
+        if not directory.exists():
+            continue
+
+        for file_path in directory.glob(f"{instance_name}*.json"):
+            try:
+                schedule = SolutionParser(file_path).parse()
+                solution = build_solution(instance, schedule)
+                solutions.append(
+                    {
+                        "schedule": schedule,
+                        "solution": solution,
+                        "path": file_path,
+                        "folder": directory.name,
+                    }
+                )
+            except Exception as error:
+                print(f"Error reading {file_path}: {error}")
+
+    return solutions
+
+
 def main():
     print("=== Select Instance File ===")
     instance_path = select_file("data/input")
     instance = InstanceParser(instance_path).parse()
 
-    print("\n=== Select Solution File ===")
-    solution_path = select_file("data/solutions/hillclimbing_heuristic")
-    schedule = SolutionParser(solution_path).parse()
+    instance_name = Path(instance_path).stem.replace("_input", "")
 
-    try:
-        validate_schedule_against_instance(schedule, instance)
-    except ValueError as e:
-        print(f"\nValidation error:\n{e}")
+    print("\n=== Loading initial solutions from 2 sources ===")
+    all_candidates = get_all_initial_solutions(instance, instance_name)
+
+    if not all_candidates:
+        print(f"No initial solutions found for {instance_name} in any folder.")
         return
 
-    evaluator = BaseEvaluator(instance)
+    print(f"Found {len(all_candidates)} solutions in total.")
 
-    unselected_ids = []
+    best_entry = max(all_candidates, key=lambda entry: entry["solution"].fitness)
+    best_schedule = best_entry["schedule"]
+    best_solution = best_entry["solution"]
+    best_path = best_entry["path"]
+    source_folder = best_entry["folder"]
 
-    for channel in instance.channels:
-        for program in channel.programs:
-            if program.program_id not in {p.program_id for p in schedule}:
-                unselected_ids.append(program.program_id)
+    print("\n=== BEST INITIAL SELECTED ===")
+    print(f"Source Folder: {source_folder}")
+    print(f"File: {best_path.name}")
+    print(f"Initial fitness (Best): {best_solution.fitness}")
 
-    # print(f"Unselected programs: {unselected_ids}")
+    try:
+        validate_schedule_against_instance(best_schedule, instance)
+    except ValueError as error:
+        print(f"Validation error:\n{error}")
+        return
 
-    solution = Solution(evaluator=evaluator,
-                        selected=schedule,
-                        unselected_ids=unselected_ids)
+    print("\n=== Running CLASSIC ILS ===")
 
-    print(f"Old greedy fitness: {solution.fitness}")
+    solver = IteratedLocalSearchSolver(best_solution)
+    best_result = solver.solve(instance)
 
-    solver = HillClimbingSolver(solution)
-    best_solution = solver.solve(instance)
+    print(f"\nFINAL ILS FITNESS: {best_result.fitness}")
+    print(f"Improvement from {best_solution.fitness}: {best_result.fitness - best_solution.fitness}")
 
-    print(f"New hill climbing heuristic fitness: {best_solution.fitness}")
-
-    instance_name = Path(instance_path).stem.replace("_input", "")
-    output_path = Path("data/solutions/hillclimbing_heuristic") / (
-        f"{instance_name}_output_hillclimbing_heuristic_{int(best_solution.fitness)}.json"
+    output_path = Path("data/solutions/ils") / (
+        f"{instance_name}_ils_best_initial_{int(best_result.fitness)}.json"
     )
-    save_solution(best_solution.selected, output_path)
-    print(f"Hill climbing heuristic solution saved to: {output_path}")
+    save_solution(best_result.selected, output_path)
+
+    print(f"Saved to: {output_path}")
 
 
 if __name__ == "__main__":

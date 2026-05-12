@@ -4,7 +4,7 @@ from models.solution.solution import Solution
 from operators.replace import replace, replace_heuristic
 from operators.shift_borders import shift_borders, shift_borders_heuristic, TargetBorder, Mode
 from operators.swap import swap, swap_heuristic
-import config.config as config
+import config.hill_climbing_config as config
 
 import random
 from copy import deepcopy
