@@ -1,3 +1,5 @@
+import copy
+
 from models.solution.schedule import Schedule
 from models.solution.scheduled_program import ScheduledProgram
 from evaluators.evaluator import Evaluator
@@ -37,6 +39,19 @@ class Solution:
                 self.unselected_ids.append(scheduled_program.program_id)
                 
             self._fitness = None
+
+    def __deepcopy__(self, memo):
+        # The evaluator holds the full read-only instance data (channels, programs).
+        # Sharing it across copies avoids deep-copying megabytes of instance data
+        # on every neighbor generation, which is critical for large instances.
+        cls = self.__class__
+        result = cls.__new__(cls)
+        memo[id(self)] = result
+        result.evaluator = self.evaluator
+        result.selected = copy.deepcopy(self.selected, memo)
+        result.unselected_ids = copy.deepcopy(self.unselected_ids, memo)
+        result._fitness = self._fitness
+        return result
 
     def __repr__(self):
         return (f"Solution(fitness={self.fitness}, "
