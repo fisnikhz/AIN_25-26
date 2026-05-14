@@ -17,10 +17,10 @@ class Solution:
     def __deepcopy__(self, memo):
         new = Solution.__new__(Solution)
         memo[id(self)] = new
-        new.evaluator = self.evaluator          # shared — evaluator is never mutated
-        new.selected = deepcopy(self.selected, memo)  # deep — scheduled programs change
-        new.unselected_ids = list(self.unselected_ids)  # shallow — strings are immutable
-        new._fitness = None                     # reset so it's recomputed on access
+        new.evaluator = self.evaluator
+        new.selected = deepcopy(self.selected, memo)
+        new.unselected_ids = list(self.unselected_ids)
+        new._fitness = None
         return new
 
     @property

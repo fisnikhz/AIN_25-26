@@ -1,15 +1,3 @@
-"""
-Tabu Search Solver for TV Scheduling Optimization.
-
-Implements the basic Tabu Search pseudocode with standard academic additions:
-- Recency-based short-term memory (tabu list)
-- Frequency-based long-term memory (diversification)
-- Aspiration #1: accept tabu move if it beats best-ever fitness
-- Aspiration #2: accept tabu move if ALL neighbors are tabu (default)
-- Diversification: frequency-penalty scoring mode when stuck
-- Intensification: restart from elite solutions when very stuck
-"""
-
 import random
 from collections import deque, defaultdict
 from copy import deepcopy
@@ -31,25 +19,13 @@ class TabuSearchSolver(BaseSolver):
         super().__init__(solution)
         self.instance = instance
 
-        # Short-term memory: recency-based tabu list
         self.tabu_list = deque(maxlen=config.TABU_TENURE)
-
-        # Long-term memory: frequency of each move applied
         self.frequency_memory = defaultdict(int)
-
-        # Best solution ever found
         self.best_ever = deepcopy(solution)
-
-        # Elite solutions list for intensification (top ELITE_SIZE solutions)
         self.elite_solutions = [(solution.fitness, deepcopy(solution))]
-
-        # Diversification state
         self.diversification_mode = False
         self.diversification_remaining = 0
 
-        # Pre-filter unselected programs to only those that fit in current gaps.
-        # Operators deepcopy the solution on every call — trimming 20k → ~100-500
-        # IDs makes every deepcopy ~40x faster.
         self.candidate_pool = self._build_candidate_pool(solution)
         print(f"Candidate pool: {len(self.candidate_pool)} / {len(solution.unselected_ids)} unselected programs")
 
@@ -82,22 +58,16 @@ class TabuSearchSolver(BaseSolver):
 
             iteration = self.stats['iterations']
 
-            # Generate neighbor solutions
             neighbors = self._generate_neighbors(current)
             if not neighbors:
                 break
 
-            # Score all neighbors (fitness, or fitness - freq_penalty in diversification mode)
             scored = [(self._score(n, m), n, m) for n, m in neighbors]
             scored.sort(key=lambda x: -x[0])
 
             _, best_neighbor, best_move = scored[0]
             non_tabu = [(s, n, m) for s, n, m in scored if not self._is_tabu(m)]
 
-            # Decision rule from pseudocode:
-            # sx not tabu → accept sx
-            # sx tabu but aspiration met → accept sx (aspiration #1)
-            # else → accept best non-tabu snt (or aspiration #2 if all tabu)
             if not self._is_tabu(best_move):
                 current = best_neighbor
                 applied_move = best_move
@@ -110,16 +80,13 @@ class TabuSearchSolver(BaseSolver):
                 current = best_non_tabu
                 applied_move = best_nt_move
             else:
-                # Aspiration by default: all neighbors are tabu, take best anyway
                 current = best_neighbor
                 applied_move = best_move
                 self.stats['aspiration_default_hits'] += 1
 
-            # Update tabu memories
             self.tabu_list.append(applied_move)
             self.frequency_memory[applied_move] += 1
 
-            # Track best ever
             if current.fitness > self.best_ever.fitness:
                 self.best_ever = deepcopy(current)
                 no_improve_count = 0
@@ -128,23 +95,19 @@ class TabuSearchSolver(BaseSolver):
             else:
                 no_improve_count += 1
 
-            # Maintain elite solutions list
             self._update_elite(current)
 
-            # Decay diversification mode
             if self.diversification_mode:
                 self.diversification_remaining -= 1
                 if self.diversification_remaining <= 0:
                     self.diversification_mode = False
 
-            # Trigger diversification: activate frequency-penalty scoring mode (pure Tabu)
             if no_improve_count == config.DIVERSIFICATION_TRIGGER:
                 self.diversification_mode = True
                 self.diversification_remaining = config.DIVERSIFICATION_DURATION
                 self.stats['diversifications'] += 1
                 print(f"[Iter {iteration}] DIVERSIFICATION mode ON (frequency penalty active)")
 
-            # Trigger intensification: restart from elite solution (pure Tabu)
             if no_improve_count == config.INTENSIFICATION_TRIGGER:
                 current = self._intensify_from_elite()
                 no_improve_count = 0
@@ -162,22 +125,12 @@ class TabuSearchSolver(BaseSolver):
         return self.best_ever
 
     def _score(self, neighbor: Solution, move) -> float:
-        """
-        Raw fitness in normal mode.
-        In diversification mode: penalize frequently-used moves to push search elsewhere.
-        """
         base = neighbor.fitness
         if self.diversification_mode:
             return base - config.DIVERSITY_WEIGHT * self.frequency_memory[move]
         return base
 
     def _build_candidate_pool(self, solution: Solution) -> set:
-        """
-        Pre-filter unselected IDs to only those whose time window overlaps a gap
-        in the current schedule by at least min_duration. This shrinks the list
-        operators deepcopy from 20k+ down to a few hundred, making each iteration
-        dramatically faster without affecting solution quality.
-        """
         scheduled = solution.selected.scheduled_programs
         unselected_set = set(solution.unselected_ids)
 
@@ -218,16 +171,12 @@ class TabuSearchSolver(BaseSolver):
         return candidates
 
     def _slim(self, solution: Solution) -> Solution:
-        """Return a shallow-ish copy of solution with unselected_ids trimmed to
-        the candidate pool. Operators deepcopy this slim version, not the full one."""
         s = deepcopy(solution)
         s.unselected_ids = [uid for uid in solution.unselected_ids
                             if uid in self.candidate_pool]
         return s
 
     def _generate_neighbors(self, solution: Solution) -> list:
-        """Sample NEIGHBORHOOD_SIZE neighbors using all 4 operators."""
-        # Use a slim solution so every operator's internal deepcopy is fast
         slim = self._slim(solution)
 
         neighbors = []
@@ -308,7 +257,6 @@ class TabuSearchSolver(BaseSolver):
         return move in self.tabu_list
 
     def _update_elite(self, solution: Solution):
-        """Maintain top ELITE_SIZE solutions seen (for intensification)."""
         if any(abs(f - solution.fitness) < 0.001 for f, _ in self.elite_solutions):
             return
         self.elite_solutions.append((solution.fitness, deepcopy(solution)))
@@ -316,7 +264,6 @@ class TabuSearchSolver(BaseSolver):
         self.elite_solutions = self.elite_solutions[:config.ELITE_SIZE]
 
     def _intensify_from_elite(self) -> Solution:
-        """Restart from a top-3 elite solution (pure Tabu intensification)."""
         top = self.elite_solutions[:min(3, len(self.elite_solutions))]
         _, elite = random.choice(top)
         return deepcopy(elite)
