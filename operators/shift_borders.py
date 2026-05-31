@@ -158,11 +158,11 @@ def _distance_to_priority_block_constraint(
 
         if border == TargetBorder.left:
             distance = program.start - priority_block.end
-            if distance > 0:
+            if distance >= 0:
                 min_distance = min(min_distance, distance)
         else:
             distance = priority_block.start - program.end
-            if distance > 0:
+            if distance >= 0:
                 min_distance = min(min_distance, distance)
 
     return int(min_distance) if min_distance != float("inf") else 1_000_000
